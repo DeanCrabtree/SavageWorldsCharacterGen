@@ -1,7 +1,9 @@
-package org.lairdham;
+package org.lairdham.controllers;
+
+import javafx.fxml.FXML;
+import org.lairdham.App;
 
 import java.io.IOException;
-import javafx.fxml.FXML;
 
 public class CharacterListController {
 

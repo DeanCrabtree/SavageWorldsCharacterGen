@@ -1,0 +1,13 @@
+{
+  "Elf": {
+    "name":"Elf",
+    "description":"Description",
+    "ancestralAbilities":["Agile", "All Thumbs", "Low Light Vision"]
+  },
+
+  "Human": {
+    "name":"Human",
+    "description":"Humans in most settings get the usual benefit - one free Edge of their choice. This option reflects their versatility and adaptability compared to other races",
+    "ancestralAbilities":["+1 free Edge"]
+  }
+}
