@@ -2,9 +2,9 @@ package org.lairdham.models;
 
 public class Skill implements Trait {
 
-    String name;
-    TraitValue value = TraitValue.noValue;
-    Attribute linkedAttribute;
+    private String name;
+    private TraitValue value = TraitValue.noValue;
+    private Attribute linkedAttribute;
 
     public Skill(String name, Attribute linkedAttribute) {
         this.name = name;

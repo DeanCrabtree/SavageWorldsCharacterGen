@@ -3,10 +3,13 @@ package org.lairdham.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
 import org.lairdham.App;
 import org.lairdham.models.Ancestry;
+import org.lairdham.models.Character;
+import org.lairdham.models.CharacterCreatorSingleton;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,10 +23,17 @@ public class AncestrySelectController {
     @FXML
     Text ancestryDescription;
 
+    @FXML
+    Button nextButton;
+
     Map<String, Ancestry> ancestryDataMap = new HashMap<>();
+
+    Character characterInProgress;
 
     @FXML
     protected void initialize() {
+
+        characterInProgress = CharacterCreatorSingleton.getInstance().getCharacter();
 
         try {
             ancestryDataMap = new ObjectMapper().readValue(App.class.getResource("datafiles/ancestrydata.json"), new TypeReference<>() {
@@ -39,6 +49,8 @@ public class AncestrySelectController {
 
     @FXML
     private void nextPage() throws IOException {
+        characterInProgress.setAncestry(ancestryDataMap.get(ancestryList.getSelectionModel().getSelectedItem()));
+        CharacterCreatorSingleton.getInstance().setCharacter(characterInProgress);
         App.setRoot("traits");
     }
 

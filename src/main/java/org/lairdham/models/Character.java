@@ -52,6 +52,48 @@ public class Character {
     int wounds;
     int fatigueLevel;
 
+    public Character() {
+        //Default character values
+
+        agility = new Attribute("agility");
+        smarts = new Attribute("smarts");
+        spirit = new Attribute("spirit");
+        strength = new Attribute("strength");
+        vigor = new Attribute("vigor");
+
+        boating = new Skill("boating", agility);
+        driving = new Skill("driving", agility);
+        fighting = new Skill("fighting", agility);
+        lockpicking = new Skill("lockpicking", agility);
+        piloting = new Skill("piloting", agility);
+        riding = new Skill("riding", agility);
+        shooting = new Skill("shooting", agility);
+        stealth = new Skill("stealth", agility);
+        swimming = new Skill("swimming", agility);
+        throwing = new Skill("throwing", agility);
+
+        gambling = new Skill("gambling", smarts);
+        healing = new Skill("healing", smarts);
+        investigation = new Skill("investigation", smarts);
+        notice = new Skill("notice", smarts);
+        repair = new Skill("repair", smarts);
+        streetwise = new Skill("streetwise", smarts);
+        survival = new Skill("survival", smarts);
+        taunt = new Skill("taunt", smarts);
+        tracking = new Skill("tracking", smarts);
+
+        intimidation = new Skill("intimidation", spirit);
+        persuasion = new Skill("persuasion", spirit);
+        climbing = new Skill("climbing", strength);
+
+        experience = 0;
+        bennies = 0;
+
+        shaken = false;
+        incapacitated = false;
+    }
+
+    //Derived Statistics
     public int getCharisma() {
         return 0;
     }
@@ -61,7 +103,8 @@ public class Character {
     }
 
     public int getNaturalParry() {
-        return 0;
+        int skillBonus = !fighting.getValue().equals(TraitValue.noValue) ? fighting.getValue().getNumericalValue() / 2 : 1;
+        return 2 + skillBonus;
     }
 
     public int getTotalParry() {
@@ -74,6 +117,14 @@ public class Character {
 
     public int getTotalToughness() {
         return getNaturalToughness() + armourBonus;
+    }
+
+    public void setAncestry(Ancestry ancestry) {
+        this.ancestry = ancestry;
+    }
+
+    public void addExperience(int experience) {
+        this.experience = this.experience + experience;
     }
 
 
