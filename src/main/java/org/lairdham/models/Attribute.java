@@ -20,6 +20,11 @@ public class Attribute implements Trait {
     }
 
     @Override
+    public void decrementValue() {
+        value = value.previous();
+    }
+
+    @Override
     public TraitValue getValue() {
         return value;
     }

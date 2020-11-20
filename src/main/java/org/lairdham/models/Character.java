@@ -93,7 +93,7 @@ public class Character {
         incapacitated = false;
     }
 
-    //Derived Statistics
+    ////////////////Derived Statistics////////////////////
     public int getCharisma() {
         return 0;
     }
@@ -118,6 +118,7 @@ public class Character {
     public int getTotalToughness() {
         return getNaturalToughness() + armourBonus;
     }
+    ///////////////End of Derived Statistics///////////////
 
     public void setAncestry(Ancestry ancestry) {
         this.ancestry = ancestry;
@@ -127,5 +128,121 @@ public class Character {
         this.experience = this.experience + experience;
     }
 
+    public void adjustTrait(Trait trait, int value) {
+        if (value > 0) {
+            trait.incrementValue();
+        } else {
+            trait.decrementValue();
+        }
+    }
+
+    ////////Get Traits//////////////////////////////
+    public Attribute getAgility() {
+        return agility;
+    }
+
+    public Attribute getSmarts() {
+        return smarts;
+    }
+
+    public Attribute getSpirit() {
+        return spirit;
+    }
+
+    public Attribute getStrength() {
+        return strength;
+    }
+
+    public Attribute getVigor() {
+        return vigor;
+    }
+
+    public Skill getBoating() {
+        return boating;
+    }
+
+    public Skill getDriving() {
+        return driving;
+    }
+
+    public Skill getFighting() {
+        return fighting;
+    }
+
+    public Skill getLockpicking() {
+        return lockpicking;
+    }
+
+    public Skill getPiloting() {
+        return piloting;
+    }
+
+    public Skill getRiding() {
+        return riding;
+    }
+
+    public Skill getShooting() {
+        return shooting;
+    }
+
+    public Skill getStealth() {
+        return stealth;
+    }
+
+    public Skill getSwimming() {
+        return swimming;
+    }
+
+    public Skill getThrowing() {
+        return throwing;
+    }
+
+    public Skill getGambling() {
+        return gambling;
+    }
+
+    public Skill getHealing() {
+        return healing;
+    }
+
+    public Skill getInvestigation() {
+        return investigation;
+    }
+
+    public Skill getNotice() {
+        return notice;
+    }
+
+    public Skill getRepair() {
+        return repair;
+    }
+
+    public Skill getStreetwise() {
+        return streetwise;
+    }
+
+    public Skill getSurvival() {
+        return survival;
+    }
+
+    public Skill getTaunt() {
+        return taunt;
+    }
+
+    public Skill getTracking() {
+        return tracking;
+    }
+
+    public Skill getIntimidation() {
+        return intimidation;
+    }
+
+    public Skill getPersuasion() {
+        return persuasion;
+    }
+
+    public Skill getClimbing() {
+        return climbing;
+    }
 
 }

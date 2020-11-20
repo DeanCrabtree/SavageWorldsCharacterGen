@@ -22,7 +22,24 @@ public class Skill implements Trait {
     }
 
     @Override
+    public void decrementValue() {
+        value = value.previous();
+    }
+
+    @Override
     public TraitValue getValue() {
         return value;
+    }
+
+    public Attribute getLinkedAttribute() {
+        return linkedAttribute;
+    }
+
+    public boolean isEqualToOrGreaterThanLinkedAttribute() {
+        return this.value.getNumericalValue() >= linkedAttribute.getValue().getNumericalValue();
+    }
+
+    public boolean isGreaterThanLinkedAttribute() {
+        return this.value.getNumericalValue() > linkedAttribute.getValue().getNumericalValue();
     }
 }

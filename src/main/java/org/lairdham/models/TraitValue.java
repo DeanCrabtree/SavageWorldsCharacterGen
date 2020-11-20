@@ -1,7 +1,16 @@
 package org.lairdham.models;
 
 public enum TraitValue {
-    noValue(0), d4(4), d6(6), d8(8), d10(10),
+    noValue(2) {
+        @Override
+        public TraitValue previous() {
+            return this;
+        }
+    },
+    d4(4),
+    d6(6),
+    d8(8),
+    d10(10),
     d12(12) {
        @Override
        public TraitValue next() {
@@ -21,5 +30,8 @@ public enum TraitValue {
 
     public TraitValue next() {
         return values()[ordinal() +1];
+    }
+    public TraitValue previous() {
+        return values()[ordinal() -1];
     }
 }
