@@ -62,7 +62,9 @@ public class AncestrySelectController {
     @FXML
     private void selectAncestry() {
         Ancestry selectedAncestry = ancestryDataMap.get(ancestryList.getSelectionModel().getSelectedItem());
-        ancestryDescription.setText(selectedAncestry.getDescription());
-        nextButton.setDisable(false);
+        if (selectedAncestry != null) {
+            ancestryDescription.setText(selectedAncestry.getDescription());
+            nextButton.setDisable(false);
+        }
     }
 }

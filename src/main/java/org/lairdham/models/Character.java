@@ -1,5 +1,7 @@
 package org.lairdham.models;
 
+import java.util.List;
+
 public class Character {
 
     String name;
@@ -51,6 +53,8 @@ public class Character {
     boolean incapacitated;
     int wounds;
     int fatigueLevel;
+
+    List<Hindrance> hindrances;
 
     public Character() {
         //Default character values
@@ -126,6 +130,19 @@ public class Character {
     public void setAncestry(Ancestry ancestry) {
         this.ancestry = ancestry;
     }
+
+    public List<Hindrance> getAllHindrances() {
+        return hindrances;
+    }
+
+    public void setHindrances(List<Hindrance> hindrances) {
+        this.hindrances = hindrances;
+    }
+
+    public void addHindrance(Hindrance hindrance) {
+        hindrances.add(hindrance);
+    }
+
 
     public void addExperience(int experience) {
         this.experience = this.experience + experience;

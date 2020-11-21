@@ -1,5 +1,7 @@
 package org.lairdham.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
@@ -22,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 public class TraitsController {
 
@@ -104,6 +107,7 @@ public class TraitsController {
     Image d12Image;
 
     HashMap<TraitValue, Image> imageMap = new HashMap<>();
+    HashMap<String, List<String>> traitDescriptions = new HashMap<>();
 
     CharacterCreatorSingleton characterCreatorSingleton;
     Character characterInProgress;
@@ -115,6 +119,7 @@ public class TraitsController {
         attributePointLabel.setText("Attribute Points: " + characterCreatorSingleton.getAttributePoints());
         skillPointLabel.setText("Skill Points: " + characterCreatorSingleton.getSkillPoints());
         loadTraitImages();
+        loadTraitDescriptions();
         defaultImageViews();
 
     }
@@ -147,14 +152,18 @@ public class TraitsController {
         infoBox.initModality(Modality.APPLICATION_MODAL);
         infoBox.initStyle(StageStyle.UTILITY);
 
-        infoBox.setUserData(clickedLabel.getText());
+        HashMap<String, String> popupInfo = new HashMap<>();
+        popupInfo.put("Title", clickedLabel.getText() + " " + traitDescriptions.get(clickedLabel.getText()).get(0));
+        popupInfo.put("Description", traitDescriptions.get(clickedLabel.getText()).get(1));
 
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("fxml/traitPopup.fxml"));
+        infoBox.setUserData(popupInfo);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("fxml/popup.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         infoBox.setScene(scene);
 
-        TraitPopupController traitPopupController = fxmlLoader.getController();
-        traitPopupController.setStage(infoBox);
+        PopupController popupController = fxmlLoader.getController();
+        popupController.setStage(infoBox);
 
         infoBox.showAndWait();
         System.out.println(clickedLabel.getText());
@@ -477,6 +486,15 @@ public class TraitsController {
             imageMap.put(TraitValue.d12, d12Image);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void loadTraitDescriptions() {
+        try {
+            traitDescriptions = new ObjectMapper().readValue(App.class.getResource("datafiles/traitDescriptions.json"), new TypeReference<>() {
+            });
+        } catch (IOException e) {
+            System.out.println("Error trying to load traitDescriptions.json");
         }
     }
 

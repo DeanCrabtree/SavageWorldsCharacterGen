@@ -4,7 +4,7 @@
 <?import javafx.scene.text.Text?>
 <TitledPane xmlns="http://javafx.com/javafx"
             prefHeight="200.0" prefWidth="300.0"
-            collapsible="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lairdham.controllers.TraitPopupController"
+            collapsible="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lairdham.controllers.PopupController"
             fx:id="titledPane">
     <content>
         <Text textAlignment="CENTER" fx:id="description" wrappingWidth="250.0"/>

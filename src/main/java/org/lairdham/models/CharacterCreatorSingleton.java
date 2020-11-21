@@ -8,6 +8,9 @@ public final class CharacterCreatorSingleton {
     private int attributePoints = 5;
     private int skillPoints = 15;
 
+    private int majorHindrancesAllowed = 1;
+    private int minorHindrancesAllowed = 2;
+
 
     private final static CharacterCreatorSingleton CHARACTER_CREATOR_INSTANCE = new CharacterCreatorSingleton();
 
@@ -59,5 +62,37 @@ public final class CharacterCreatorSingleton {
 
     public int getSkillPoints() {
         return skillPoints;
+    }
+
+    public int getHindrancesAllowed(Hindrance.HindranceType type) {
+        switch (type){
+            case Major:
+                return majorHindrancesAllowed;
+
+            case Minor:
+                return minorHindrancesAllowed;
+
+            default:
+                return 0;
+        }
+    }
+
+    public void adjustHindrancesAllowed(Hindrance.HindranceType type, int value) {
+        switch (type){
+            case Major:
+                majorHindrancesAllowed+=value;
+                break;
+
+            case Minor:
+                minorHindrancesAllowed+=value;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public boolean allHindrancesChosen() {
+        return majorHindrancesAllowed+minorHindrancesAllowed==0;
     }
 }
