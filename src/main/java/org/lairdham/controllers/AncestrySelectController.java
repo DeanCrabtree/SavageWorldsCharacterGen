@@ -45,18 +45,24 @@ public class AncestrySelectController {
         if (ancestryDataMap != null && !ancestryDataMap.isEmpty()) {
             ancestryDataMap.keySet().forEach(ancestryName -> ancestryList.getItems().add(ancestryName));
         }
+
+        if (characterInProgress.getAncestry() != null) {
+            ancestryList.getSelectionModel().select(characterInProgress.getAncestry().getName());
+            selectAncestry();
+        }
     }
 
     @FXML
     private void nextPage() throws IOException {
         characterInProgress.setAncestry(ancestryDataMap.get(ancestryList.getSelectionModel().getSelectedItem()));
         CharacterCreatorSingleton.getInstance().setCharacter(characterInProgress);
-        App.setRoot("traits");
+        App.setRoot("hindrances");
     }
 
     @FXML
     private void selectAncestry() {
         Ancestry selectedAncestry = ancestryDataMap.get(ancestryList.getSelectionModel().getSelectedItem());
         ancestryDescription.setText(selectedAncestry.getDescription());
+        nextButton.setDisable(false);
     }
 }

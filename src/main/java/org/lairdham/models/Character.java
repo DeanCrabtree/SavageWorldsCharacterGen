@@ -120,6 +120,9 @@ public class Character {
     }
     ///////////////End of Derived Statistics///////////////
 
+    public Ancestry getAncestry() {
+        return ancestry;
+    }
     public void setAncestry(Ancestry ancestry) {
         this.ancestry = ancestry;
     }

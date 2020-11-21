@@ -1,15 +1,22 @@
 package org.lairdham.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.lairdham.App;
-import org.lairdham.models.*;
 import org.lairdham.models.Character;
+import org.lairdham.models.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -120,7 +127,37 @@ public class TraitsController {
 
     @FXML
     private void prevPage() throws IOException {
-        App.setRoot("ancestrySelect");
+        App.setRoot("hindrances");
+    }
+
+    @FXML
+    private void mouseOver() {
+        App.setCursor(Cursor.HAND);
+    }
+
+    @FXML
+    private void mouseOff() {
+        App.setCursor(Cursor.DEFAULT);
+    }
+
+    @FXML
+    private void showTraitInfo(MouseEvent event) throws IOException {
+        Label clickedLabel = (Label) event.getSource();
+        Stage infoBox = new Stage();
+        infoBox.initModality(Modality.APPLICATION_MODAL);
+        infoBox.initStyle(StageStyle.UTILITY);
+
+        infoBox.setUserData(clickedLabel.getText());
+
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("fxml/traitPopup.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        infoBox.setScene(scene);
+
+        TraitPopupController traitPopupController = fxmlLoader.getController();
+        traitPopupController.setStage(infoBox);
+
+        infoBox.showAndWait();
+        System.out.println(clickedLabel.getText());
     }
 
     private void increaseAttribute(Attribute attribute, ImageView imageView) {

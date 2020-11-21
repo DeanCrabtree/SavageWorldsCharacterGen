@@ -4,51 +4,65 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lairdham.controllers.TraitsController">
+    <top>
+        <Label BorderPane.alignment="BOTTOM_CENTER" text="Traits">
+            <font>
+                <Font size="22.0" />
+            </font>
+        </Label>
+    </top>
     <center>
         <VBox alignment="TOP_CENTER" spacing="15.0" >
-            <Label fx:id="attributePointLabel" text="Attribute Points:">
-                <font>
-                    <Font size="24.0" />
-                </font>
-            </Label>
-            <Label fx:id="skillPointLabel" text="Skill Points:" visible="false">
-                <font>
-                    <Font size="22.0" />
-                </font>
-            </Label>
-            <HBox alignment="CENTER" maxWidth="Infinity" prefWidth="980" spacing="20.0">
+            <HBox alignment="CENTER" spacing="50.0">
+                <Label fx:id="attributePointLabel" text="Attribute Points:">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Pane minWidth="110.0"/>
+                <Label fx:id="skillPointLabel" text="Skill Points:" visible="false">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <padding>
+                    <Insets left="20.0" right="20.0"/>
+                </padding>
+            </HBox>
+            <HBox id="Agility, Smarts and Spirit" alignment="CENTER" maxWidth="Infinity" prefWidth="980" spacing="20.0">
                 <VBox alignment="CENTER" spacing="15.0">
-                    <Label text="Agility">
+                    <Label text="Agility" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo">
                         <font>
                            <Font size="20.0" />
                         </font>
                     </Label>
-                    <HBox alignment="CENTER" spacing="20.0">
+                    <HBox alignment="CENTER" spacing="10.0">
                         <Button text="-" onAction="#reduceAgilityValue"/>
                         <ImageView fx:id="agilityImageView" fitWidth="196" preserveRatio="true"/>
                         <Button text="+" onAction="#increaseAgilityValue"/>
                     </HBox>
                 </VBox>
                 <VBox alignment="CENTER" spacing="15.0">
-                    <Label text="Smarts">
+                    <Label text="Smarts" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo">
                         <font>
                             <Font size="20.0" />
                         </font>
                     </Label>
-                    <HBox alignment="CENTER" spacing="20.0">
+                    <HBox alignment="CENTER" spacing="10.0">
                         <Button text="-" onAction="#reduceSmartsValue"/>
                         <ImageView fx:id="smartsImageView" fitWidth="196" preserveRatio="true"/>
                         <Button text="+" onAction="#increaseSmartsValue"/>
                     </HBox>
                 </VBox>
                 <VBox alignment="CENTER" spacing="15.0">
-                    <Label text="Spirit">
+                    <Label text="Spirit" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo">
                         <font>
                             <Font size="20.0" />
                         </font>
                     </Label>
-                    <HBox alignment="CENTER" spacing="20.0">
+                    <HBox alignment="CENTER" spacing="10.0">
                         <Button text="-" onAction="#reduceSpiritValue"/>
                         <ImageView fx:id="spiritImageView" fitWidth="196" preserveRatio="true"/>
                         <Button text="+" onAction="#increaseSpiritValue"/>
@@ -58,61 +72,61 @@
             <HBox disable="true" fx:id="skillBox1" maxHeight="0" alignment="CENTER" maxWidth="Infinity" prefWidth="980" spacing="30.0">
                 <VBox id="agilitySkills" alignment="TOP_CENTER" spacing="10.0">
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Boating"/>
+                        <Label text="Boating" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="boatingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceBoatingValue"/>
                         <Button text="+" onAction="#increaseBoatingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Driving"/>
+                        <Label text="Driving" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="drivingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceDrivingValue"/>
                         <Button text="+" onAction="#increaseDrivingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Fighting"/>
+                        <Label text="Fighting" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="fightingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceFightingValue"/>
                         <Button text="+" onAction="#increaseFightingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Lockpicking"/>
+                        <Label text="Lockpicking" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="lockpickingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceLockpickingValue"/>
                         <Button text="+" onAction="#increaseLockpickingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Piloting"/>
+                        <Label text="Piloting" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="pilotingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reducePilotingValue"/>
                         <Button text="+" onAction="#increasePilotingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Riding"/>
+                        <Label text="Riding" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="ridingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceRidingValue"/>
                         <Button text="+" onAction="#increaseRidingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Shooting"/>
+                        <Label text="Shooting" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="shootingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceShootingValue"/>
                         <Button text="+" onAction="#increaseShootingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Stealth"/>
+                        <Label text="Stealth" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="stealthImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceStealthValue"/>
                         <Button text="+" onAction="#increaseStealthValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Swimming"/>
+                        <Label text="Swimming" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="swimmingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceSwimmingValue"/>
                         <Button text="+" onAction="#increaseSwimmingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Throwing"/>
+                        <Label text="Throwing" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="throwingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceThrowingValue"/>
                         <Button text="+" onAction="#increaseThrowingValue"/>
@@ -120,55 +134,55 @@
                 </VBox>
                 <VBox id="smartsSkills" alignment="TOP_CENTER" spacing="10.0">
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Gambling"/>
+                        <Label text="Gambling" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="gamblingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceGamblingValue"/>
                         <Button text="+" onAction="#increaseGamblingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Healing"/>
+                        <Label text="Healing" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="healingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceHealingValue"/>
                         <Button text="+" onAction="#increaseHealingValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Investigation"/>
+                        <Label text="Investigation" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="investigationImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceInvestigationValue"/>
                         <Button text="+" onAction="#increaseInvestigationValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Notice"/>
+                        <Label text="Notice" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="noticeImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceNoticeValue"/>
                         <Button text="+" onAction="#increaseNoticeValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Repair"/>
+                        <Label text="Repair" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="repairImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceRepairValue"/>
                         <Button text="+" onAction="#increaseRepairValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Streetwise"/>
+                        <Label text="Streetwise" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="streetwiseImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceStreetwiseValue"/>
                         <Button text="+" onAction="#increaseStreetwiseValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Survival"/>
+                        <Label text="Survival" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="survivalImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceSurvivalValue"/>
                         <Button text="+" onAction="#increaseSurvivalValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Taunt"/>
+                        <Label text="Taunt" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="tauntImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceTauntValue"/>
                         <Button text="+" onAction="#increaseTauntValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Tracking"/>
+                        <Label text="Tracking" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="trackingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceTrackingValue"/>
                         <Button text="+" onAction="#increaseTrackingValue"/>
@@ -176,39 +190,39 @@
                 </VBox>
                 <VBox id="spiritSkills" alignment="TOP_CENTER" spacing="10.0">
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Intimidation"/>
+                        <Label text="Intimidation" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="intimidationImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceIntimidationValue"/>
                         <Button text="+" onAction="#increaseIntimidationValue"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Persuasion"/>
+                        <Label text="Persuasion" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="persuasionImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reducePersuasionValue"/>
                         <Button text="+" onAction="#increasePersuasionValue"/>
                     </HBox>
                 </VBox>
             </HBox>
-            <HBox alignment="CENTER" maxWidth="Infinity" prefWidth="980" spacing="20.0">
+            <HBox id="Strength and Vigor" alignment="CENTER" maxWidth="Infinity" prefWidth="980" spacing="20.0">
                 <VBox alignment="CENTER" spacing="15.0">
-                    <Label text="Strength">
+                    <Label text="Strength" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo">
                         <font>
                             <Font size="20.0" />
                         </font>
                     </Label>
-                    <HBox alignment="CENTER" spacing="20.0">
+                    <HBox alignment="CENTER" spacing="10.0">
                         <Button text="-" onAction="#reduceStrengthValue"/>
                         <ImageView fx:id="strengthImageView" fitWidth="196" preserveRatio="true"/>
                         <Button text="+" onAction="#increaseStrengthValue"/>
                     </HBox>
                 </VBox>
                 <VBox alignment="CENTER" spacing="15.0">
-                    <Label text="Vigor">
+                    <Label text="Vigor" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo">
                         <font>
                             <Font size="20.0" />
                         </font>
                     </Label>
-                    <HBox fx:id="vigorBox" alignment="CENTER" spacing="20.0">
+                    <HBox fx:id="vigorBox" alignment="CENTER" spacing="10.0">
                         <Button text="-" onAction="#reduceVigorValue"/>
                         <ImageView fx:id="vigorImageView" fitWidth="196" preserveRatio="true"/>
                         <Button text="+" onAction="#increaseVigorValue"/>
@@ -216,10 +230,9 @@
                 </VBox>
             </HBox>
             <HBox disable="true" fx:id="skillBox2" maxHeight="0" alignment="CENTER" maxWidth="Infinity" prefWidth="980" spacing="30.0">
-
                 <VBox id="strengthSkills" alignment="TOP_CENTER" spacing="10.0">
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label text="Climbing"/>
+                        <Label text="Climbing" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showTraitInfo"/>
                         <ImageView fx:id="climbingImageView" fitWidth="130" preserveRatio="true"/>
                         <Button text="-" onAction="#reduceClimbingValue"/>
                         <Button text="+" onAction="#increaseClimbingValue"/>
@@ -237,10 +250,11 @@
         </VBox>
     </center>
     <bottom>
-        <ToolBar BorderPane.alignment="BOTTOM_RIGHT">
-            <Button onAction="#prevPage" text="Prev" />
+        <ToolBar>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button onAction="#prevPage" text="Prev" minWidth="80.0"/>
             <Separator/>
-            <Button disable="true" fx:id="nextButton" onAction="#nextPage" text="Next" />
+            <Button disable="true" fx:id="nextButton" onAction="#nextPage" text="Next" minWidth="80.0"/>
         </ToolBar>
     </bottom>
 </BorderPane>

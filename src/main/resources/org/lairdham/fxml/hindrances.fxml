@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lairdham.controllers.HindrancesController">
+    <top>
+        <VBox alignment="CENTER" spacing="20.0">
+            <Label text="Hindrances">
+            <font>
+                <Font size="22.0" />
+            </font>
+        </Label>
+            <Text wrappingWidth="700" text="&#9;Depending on the ruleset you can take a certain number of Major and Minor Hindrances. A Major Hindrance is worth 2 Hindrance Points, while a Minor Hindrance is worth 1."/>
+            <Text wrappingWidth="700" text="For 2 Hindrance Points you can:&#10;&#9;- Raise an attribute one die type, or&#10;&#9;- Choose an Edge&#10; For 1 Hindrance Point you can:&#10;&#9;- Gain another Skill Point, or&#10;&#9;- Gain additional money equal to your starting funds."/>
+            <Pane minHeight="10.0"/>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane BorderPane.alignment="TOP_CENTER" dividerPositions="0.33444816053511706" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="600" prefWidth="700">
+            <AnchorPane>
+                <ListView fx:id="hindrancesList" onMouseClicked="#selectHindrance"/>
+            </AnchorPane>
+            <AnchorPane>
+                <Text fx:id="hindranceDescription" layoutX="50.0" layoutY="53.0" wrappingWidth="350.0" />
+            </AnchorPane>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <ToolBar>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button onAction="#prevPage" text="Prev" minWidth="80.0"/>
+            <Separator/>
+            <Button disable="false" fx:id="nextButton" onAction="#nextPage" text="Next" minWidth="80.0"/>
+        </ToolBar>
+    </bottom>
+</BorderPane>

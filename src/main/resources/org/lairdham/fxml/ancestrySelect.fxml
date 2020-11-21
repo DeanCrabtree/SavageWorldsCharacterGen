@@ -6,13 +6,37 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane dividerPositions="0.33444816053511706" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lairdham.controllers.AncestrySelectController">
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-        <ListView fx:id="ancestryList" layoutX="2.0" layoutY="40.0" onMouseClicked="#selectAncestry" prefHeight="359.0"
-                  prefWidth="197.0"/>
-    </AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-            <Text fx:id="ancestryDescription" layoutX="98.0" layoutY="53.0" wrappingWidth="200.0" />
-            <Button fx:id="nextButton" layoutX="359.0" layoutY="429.0" onAction="#nextPage" text="Next" />
-    </AnchorPane>
-</SplitPane>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lairdham.controllers.AncestrySelectController">
+    <top>
+        <Label BorderPane.alignment="BOTTOM_CENTER" text="Please select an Ancestry">
+            <font>
+                <Font size="22.0" />
+            </font>
+        </Label>
+    </top>
+    <center>
+        <SplitPane dividerPositions="0.33444816053511706" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="600" prefWidth="700">
+            <AnchorPane>
+                <ListView fx:id="ancestryList" onMouseClicked="#selectAncestry"/>
+            </AnchorPane>
+            <AnchorPane>
+                    <Text fx:id="ancestryDescription" layoutX="50.0" layoutY="53.0" wrappingWidth="350.0" />
+            </AnchorPane>
+        </SplitPane>
+    </center>
+    <bottom>
+        <ToolBar>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button disable="true" text="Prev" minWidth="80.0"/>
+            <Separator/>
+            <Button disable="true" fx:id="nextButton" onAction="#nextPage" text="Next" minWidth="80.0"/>
+        </ToolBar>
+    </bottom>
+</BorderPane>
