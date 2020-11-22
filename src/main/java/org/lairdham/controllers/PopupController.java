@@ -2,12 +2,10 @@ package org.lairdham.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
+import javafx.scene.text.TextAlignment;
 
-import java.util.HashMap;
+import java.util.Optional;
 
 public class PopupController {
 
@@ -16,17 +14,15 @@ public class PopupController {
     @FXML
     public Text description;
 
-    public void setStage(Stage stage) {
-        HashMap<String, String> displayInfo = (HashMap<String, String>) stage.getUserData();
-        titledPane.setText(displayInfo.get("Title"));
-        description.setText(displayInfo.get("Description"));
+    public void setData(String title, String body) {
+        setData(title, body, null);
+    }
 
-        stage.getScene().addEventHandler(KeyEvent.KEY_PRESSED, t -> {
-            if(t.getCode()== KeyCode.ESCAPE)
-            {
-                System.out.println("click on escape");
-                stage.close();
-            }
-        });
+    public void setData(String title, String body, TextAlignment bodyAlignment) {
+        titledPane.setText(title);
+        description.setText(body);
+        if (bodyAlignment != null){
+            description.setTextAlignment(bodyAlignment);
+        }
     }
 }

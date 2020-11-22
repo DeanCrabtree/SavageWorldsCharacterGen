@@ -11,6 +11,9 @@ public final class CharacterCreatorSingleton {
     private int majorHindrancesAllowed = 1;
     private int minorHindrancesAllowed = 2;
 
+    private int majorHindrancesChosen = 0;
+    private int minorHindrancesChosen = 0;
+
 
     private final static CharacterCreatorSingleton CHARACTER_CREATOR_INSTANCE = new CharacterCreatorSingleton();
 
@@ -77,18 +80,31 @@ public final class CharacterCreatorSingleton {
         }
     }
 
-    public void adjustHindrancesAllowed(Hindrance.HindranceType type, int value) {
+    public void adjustHindrancesChosen(Hindrance.HindranceType type, int value) {
         switch (type){
             case Major:
-                majorHindrancesAllowed+=value;
+                majorHindrancesChosen+=value;
                 break;
 
             case Minor:
-                minorHindrancesAllowed+=value;
+                minorHindrancesChosen+=value;
                 break;
 
             default:
                 break;
+        }
+    }
+
+    public int getRemainingHindrances(Hindrance.HindranceType type) {
+        switch (type){
+            case Major:
+                return majorHindrancesAllowed - majorHindrancesChosen;
+
+            case Minor:
+                return minorHindrancesAllowed - minorHindrancesChosen;
+
+            default:
+                return 0;
         }
     }
 

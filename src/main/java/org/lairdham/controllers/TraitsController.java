@@ -17,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.lairdham.App;
+import org.lairdham.Utils;
 import org.lairdham.models.Character;
 import org.lairdham.models.*;
 
@@ -148,25 +149,8 @@ public class TraitsController {
     @FXML
     private void showTraitInfo(MouseEvent event) throws IOException {
         Label clickedLabel = (Label) event.getSource();
-        Stage infoBox = new Stage();
-        infoBox.initModality(Modality.APPLICATION_MODAL);
-        infoBox.initStyle(StageStyle.UTILITY);
-
-        HashMap<String, String> popupInfo = new HashMap<>();
-        popupInfo.put("Title", clickedLabel.getText() + " " + traitDescriptions.get(clickedLabel.getText()).get(0));
-        popupInfo.put("Description", traitDescriptions.get(clickedLabel.getText()).get(1));
-
-        infoBox.setUserData(popupInfo);
-
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("fxml/popup.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        infoBox.setScene(scene);
-
-        PopupController popupController = fxmlLoader.getController();
-        popupController.setStage(infoBox);
-
-        infoBox.showAndWait();
-        System.out.println(clickedLabel.getText());
+        Utils.showPopup(clickedLabel.getText() + " " + traitDescriptions.get(clickedLabel.getText()).get(0),
+                traitDescriptions.get(clickedLabel.getText()).get(1));
     }
 
     private void increaseAttribute(Attribute attribute, ImageView imageView) {
