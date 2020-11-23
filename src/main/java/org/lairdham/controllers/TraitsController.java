@@ -128,7 +128,7 @@ public class TraitsController {
     @FXML
     private void nextPage() throws IOException {
         CharacterCreatorSingleton.getInstance().setCharacter(characterInProgress);
-        App.setRoot("ancestrySelect");
+        App.setRoot("edges");
     }
 
     @FXML

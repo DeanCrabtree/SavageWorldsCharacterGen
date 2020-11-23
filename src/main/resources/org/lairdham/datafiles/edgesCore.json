@@ -1,0 +1,4 @@
+[
+  {"name": "Alertness", "type": "Background", "shortDescription": "+2 Notice", "longDescription": "Not much gets by your hero. They're very observant and perceptive, and add +2 to their Notice rolls to hear, see, or otherwise sense the world around them.", "requirements": [{"type":"Rank", "requiredValue": "Novice"}]},
+  {"name": "Ambidextrous", "type": "Background", "shortDescription": "Ignore -2 penalty for using offhand.", "longDescription": "Your hero is as deft with their left hand as they are with their right. Characters normally suffer a -2 penalty when performing physical tasks with the off-hand. With this Edge, your warrior ignores the -2 penalty for using their offhand.", "requirements": [{"type":"Rank", "requiredValue": "Novice"},{"type": "Attribute", "requiredValue":{ "name": "Agility", "value" : "d8"} }]}
+]

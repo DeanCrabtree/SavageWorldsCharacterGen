@@ -1,5 +1,10 @@
 package org.lairdham.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Objects;
+
 public class Attribute implements Trait {
 
     String name;
@@ -7,6 +12,12 @@ public class Attribute implements Trait {
 
     public Attribute(String name) {
         this.name = name;
+    }
+
+    @JsonCreator
+    public Attribute(@JsonProperty("name") String name, @JsonProperty("value") TraitValue value) {
+        this.name = name;
+        this.value = value;
     }
 
     @Override
@@ -27,5 +38,28 @@ public class Attribute implements Trait {
     @Override
     public TraitValue getValue() {
         return value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name + " " + value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Attribute attribute = (Attribute) o;
+        return Objects.equals(name, attribute.name) &&
+                value == attribute.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, value);
     }
 }

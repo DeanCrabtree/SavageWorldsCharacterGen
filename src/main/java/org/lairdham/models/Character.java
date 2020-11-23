@@ -1,5 +1,6 @@
 package org.lairdham.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Character {
@@ -14,6 +15,8 @@ public class Character {
     Attribute spirit;
     Attribute strength;
     Attribute vigor;
+
+    List<Attribute> allAttributes;
 
     //Agility Skills
     Skill boating;
@@ -59,11 +62,17 @@ public class Character {
     public Character() {
         //Default character values
 
+        allAttributes = new ArrayList<>();
         agility = new Attribute("agility");
+        allAttributes.add(agility);
         smarts = new Attribute("smarts");
+        allAttributes.add(smarts);
         spirit = new Attribute("spirit");
+        allAttributes.add(spirit);
         strength = new Attribute("strength");
+        allAttributes.add(strength);
         vigor = new Attribute("vigor");
+        allAttributes.add(vigor);
 
         boating = new Skill("boating", agility);
         driving = new Skill("driving", agility);
@@ -157,6 +166,10 @@ public class Character {
     }
 
     ////////Get Traits//////////////////////////////
+    public List<Attribute> getAllAttributes() {
+        return allAttributes;
+    }
+
     public Attribute getAgility() {
         return agility;
     }

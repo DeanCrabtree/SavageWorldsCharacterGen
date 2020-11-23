@@ -1,5 +1,9 @@
 package org.lairdham.models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Skill implements Trait {
 
     private String name;
@@ -9,6 +13,14 @@ public class Skill implements Trait {
     public Skill(String name, Attribute linkedAttribute) {
         this.name = name;
         this.linkedAttribute = linkedAttribute;
+    }
+
+    @JsonCreator
+    public Skill(@JsonProperty("name") String name, @JsonProperty("linkedAttribute") Attribute linkedAttribute,
+                 @JsonProperty("value") TraitValue value) {
+        this.name = name;
+        this.linkedAttribute = linkedAttribute;
+        this.value = value;
     }
 
     @Override
@@ -35,11 +47,22 @@ public class Skill implements Trait {
         return linkedAttribute;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    @JsonIgnore
     public boolean isEqualToOrGreaterThanLinkedAttribute() {
         return this.value.getNumericalValue() >= linkedAttribute.getValue().getNumericalValue();
     }
 
+    @JsonIgnore
     public boolean isGreaterThanLinkedAttribute() {
         return this.value.getNumericalValue() > linkedAttribute.getValue().getNumericalValue();
+    }
+
+    @Override
+    public String toString() {
+        return name + " " + value;
     }
 }

@@ -6,10 +6,9 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.lairdham.App;
@@ -18,11 +17,15 @@ import org.lairdham.models.Character;
 import org.lairdham.models.CharacterCreatorSingleton;
 import org.lairdham.models.Hindrance;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
 public class HindrancesController {
 
+    @FXML
+    ImageView topTitleImage;
     @FXML
     Label hindrancePointsLabel;
     @FXML
@@ -54,6 +57,11 @@ public class HindrancesController {
         characterCreatorSingleton = CharacterCreatorSingleton.getInstance();
         characterInProgress = characterCreatorSingleton.getCharacter();
 
+        try {
+            topTitleImage.setImage(new Image(new FileInputStream("src/main/resources/org/lairdham/images/question-mark.png"), 15, 15, true, false));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         updateCounterLabels();
 
         List<Hindrance> hindrancesList;
