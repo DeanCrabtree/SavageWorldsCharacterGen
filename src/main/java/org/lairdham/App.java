@@ -17,7 +17,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         stage.setTitle("Savage Worlds Character Generator");
-        scene = new Scene(loadFXML("characterList"), 980, 720);
+        scene = new Scene(loadFXML("characterList"), 980, 750);
         stage.setScene(scene);
         stage.show();
     }

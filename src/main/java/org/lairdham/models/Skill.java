@@ -53,12 +53,12 @@ public class Skill implements Trait {
 
     @JsonIgnore
     public boolean isEqualToOrGreaterThanLinkedAttribute() {
-        return this.value.getNumericalValue() >= linkedAttribute.getValue().getNumericalValue();
+        return this.value.isGreaterThanOrEqualTo(linkedAttribute.getValue());
     }
 
     @JsonIgnore
     public boolean isGreaterThanLinkedAttribute() {
-        return this.value.getNumericalValue() > linkedAttribute.getValue().getNumericalValue();
+        return this.value.isGreaterThanOrEqualTo(linkedAttribute.getValue());
     }
 
     @Override

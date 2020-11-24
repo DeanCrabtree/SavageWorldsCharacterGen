@@ -2,11 +2,14 @@ package org.lairdham.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
@@ -30,9 +33,15 @@ import java.util.List;
 public class TraitsController {
 
     @FXML
+    public Button attributeButton;
+    @FXML
+    public Button skillButton;
+    @FXML
     Label attributePointLabel;
     @FXML
     Label skillPointLabel;
+    @FXML
+    Label hindrancePointLabel;
 
     //Attribute Images
     @FXML
@@ -119,6 +128,7 @@ public class TraitsController {
         characterInProgress = characterCreatorSingleton.getCharacter();
         attributePointLabel.setText("Attribute Points: " + characterCreatorSingleton.getAttributePoints());
         skillPointLabel.setText("Skill Points: " + characterCreatorSingleton.getSkillPoints());
+        hindrancePointLabel.setText("Hindrance Points: " + characterCreatorSingleton.getHindrancePoints());
         loadTraitImages();
         loadTraitDescriptions();
         defaultImageViews();
@@ -168,6 +178,7 @@ public class TraitsController {
 
             characterInProgress.adjustTrait(attribute, -1);
             imageView.setImage(imageMap.get(attribute.getValue()));
+            nextButton.setDisable(true);
         }
     }
 
@@ -234,6 +245,7 @@ public class TraitsController {
 
             characterInProgress.adjustTrait(skill, -1);
             imageView.setImage(imageMap.get(skill.getValue()));
+            nextButton.setDisable(true);
         }
     }
     private void resetSkill(Skill skill, ImageView imageView) {
@@ -383,7 +395,7 @@ public class TraitsController {
     }
 
     public void increasePersuasionValue() {
-        increaseSkill(characterInProgress.getStreetwise(), persuasionImageView);
+        increaseSkill(characterInProgress.getPersuasion(), persuasionImageView);
     }
     public void reducePersuasionValue() {
         reduceSkill(characterInProgress.getPersuasion(), persuasionImageView);
@@ -405,14 +417,20 @@ public class TraitsController {
         if (characterCreatorSingleton.getAttributePoints() == 0) {
             skillBox1.setDisable(false);
             skillBox2.setDisable(false);
-            skillPointLabel.setVisible(true);
+            attributeButton.setVisible(true);
             adjustSkillImageContrasts(1.0, 0.4);
         } else {
             adjustSkillImageContrasts(0.4, 0.8);
             resetSpentSkillPoints();
             skillBox1.setDisable(true);
             skillBox2.setDisable(true);
+            attributeButton.setVisible(false);
         }
+
+        if (characterCreatorSingleton.getHindrancePoints() == 0) {
+            attributeButton.setVisible(false);
+        }
+
     }
 
     private void resetSpentSkillPoints() {
@@ -512,10 +530,9 @@ public class TraitsController {
         persuasionImageView.setImage(imageMap.get(characterInProgress.getPersuasion().getValue()));
         climbingImageView.setImage(imageMap.get(characterInProgress.getClimbing().getValue()));
 
-        if (characterCreatorSingleton.getSkillPoints() == 15) {
+        if (characterCreatorSingleton.getAttributePoints() > 0) {
             adjustSkillImageContrasts(0.4, 0.8);
         } else {
-            skillPointLabel.setVisible(true);
             skillBox1.setDisable(false);
             skillBox2.setDisable(false);
             if (characterCreatorSingleton.getSkillPoints() == 0) {
@@ -552,5 +569,25 @@ public class TraitsController {
         intimidationImageView.setEffect(colorAdjust);
         persuasionImageView.setEffect(colorAdjust);
         climbingImageView.setEffect(colorAdjust);
+    }
+
+    public void spendHindrancePointsForAttributePoint() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Spend 2 Hindrance Points to gain 1 Attribute Point? This action cannot be undone.", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if(alert.getResult() == ButtonType.YES) {
+            characterCreatorSingleton.adjustHindrancePoints(-2);
+            characterCreatorSingleton.adjustAttributePoints(1);
+            attributePointLabel.setText("Attribute Points: " + characterCreatorSingleton.getAttributePoints());
+            skillPointLabel.setText("Skill Points: " + characterCreatorSingleton.getSkillPoints());
+            hindrancePointLabel.setText("Hindrance Points: " + characterCreatorSingleton.getHindrancePoints());
+            skillBox1.setDisable(true);
+            skillBox2.setDisable(true);
+            adjustSkillImageContrasts(0.4, 0.8);
+        }
+
+        if (characterCreatorSingleton.getHindrancePoints() == 0) {
+            attributeButton.setVisible(false);
+        }
     }
 }

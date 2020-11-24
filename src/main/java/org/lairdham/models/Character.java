@@ -1,7 +1,10 @@
 package org.lairdham.models;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Character {
 
@@ -15,8 +18,6 @@ public class Character {
     Attribute spirit;
     Attribute strength;
     Attribute vigor;
-
-    List<Attribute> allAttributes;
 
     //Agility Skills
     Skill boating;
@@ -57,49 +58,45 @@ public class Character {
     int wounds;
     int fatigueLevel;
 
-    List<Hindrance> hindrances;
+    List<Hindrance> hindrances = new ArrayList<>();
+    List<Edge> edges = new ArrayList<>();
 
     public Character() {
         //Default character values
 
-        allAttributes = new ArrayList<>();
-        agility = new Attribute("agility");
-        allAttributes.add(agility);
-        smarts = new Attribute("smarts");
-        allAttributes.add(smarts);
-        spirit = new Attribute("spirit");
-        allAttributes.add(spirit);
-        strength = new Attribute("strength");
-        allAttributes.add(strength);
-        vigor = new Attribute("vigor");
-        allAttributes.add(vigor);
+        agility = new Attribute("Agility");
+        smarts = new Attribute("Smarts");
+        spirit = new Attribute("Spirit");
+        strength = new Attribute("Strength");
+        vigor = new Attribute("Vigor");
 
-        boating = new Skill("boating", agility);
-        driving = new Skill("driving", agility);
-        fighting = new Skill("fighting", agility);
-        lockpicking = new Skill("lockpicking", agility);
-        piloting = new Skill("piloting", agility);
-        riding = new Skill("riding", agility);
-        shooting = new Skill("shooting", agility);
-        stealth = new Skill("stealth", agility);
-        swimming = new Skill("swimming", agility);
-        throwing = new Skill("throwing", agility);
+        boating = new Skill("Boating", agility);
+        driving = new Skill("Driving", agility);
+        fighting = new Skill("Fighting", agility);
+        lockpicking = new Skill("Lockpicking", agility);
+        piloting = new Skill("Piloting", agility);
+        riding = new Skill("Riding", agility);
+        shooting = new Skill("Shooting", agility);
+        stealth = new Skill("Stealth", agility);
+        swimming = new Skill("Swimming", agility);
+        throwing = new Skill("Throwing", agility);
 
-        gambling = new Skill("gambling", smarts);
-        healing = new Skill("healing", smarts);
-        investigation = new Skill("investigation", smarts);
-        notice = new Skill("notice", smarts);
-        repair = new Skill("repair", smarts);
-        streetwise = new Skill("streetwise", smarts);
-        survival = new Skill("survival", smarts);
-        taunt = new Skill("taunt", smarts);
-        tracking = new Skill("tracking", smarts);
+        gambling = new Skill("Gambling", smarts);
+        healing = new Skill("Healing", smarts);
+        investigation = new Skill("Investigation", smarts);
+        notice = new Skill("Notice", smarts);
+        repair = new Skill("Repair", smarts);
+        streetwise = new Skill("Streetwise", smarts);
+        survival = new Skill("Survival", smarts);
+        taunt = new Skill("Taunt", smarts);
+        tracking = new Skill("Tracking", smarts);
 
-        intimidation = new Skill("intimidation", spirit);
-        persuasion = new Skill("persuasion", spirit);
-        climbing = new Skill("climbing", strength);
+        intimidation = new Skill("Intimidation", spirit);
+        persuasion = new Skill("Persuasion", spirit);
+        climbing = new Skill("Climbing", strength);
 
         experience = 0;
+        rank = Rank.Novice;
         bennies = 0;
 
         shaken = false;
@@ -152,6 +149,21 @@ public class Character {
         hindrances.add(hindrance);
     }
 
+    public List<Edge> getAllEdges() {
+        return edges;
+    }
+
+    public void setEdges(List<Edge> edges) {
+        this.edges = edges;
+    }
+
+    public void addEdge(Edge edge) {
+        edges.add(edge);
+    }
+
+    public Rank getRank() {
+        return rank;
+    }
 
     public void addExperience(int experience) {
         this.experience = this.experience + experience;
@@ -166,7 +178,13 @@ public class Character {
     }
 
     ////////Get Traits//////////////////////////////
-    public List<Attribute> getAllAttributes() {
+    public Map<String, Attribute> getAllAttributes() {
+        Map<String, Attribute> allAttributes = new HashMap<>();
+        allAttributes.put(agility.getName(), agility);
+        allAttributes.put(smarts.getName(), smarts);
+        allAttributes.put(spirit.getName(), spirit);
+        allAttributes.put(strength.getName(), strength);
+        allAttributes.put(vigor.getName(), vigor);
         return allAttributes;
     }
 
@@ -276,6 +294,17 @@ public class Character {
 
     public Skill getClimbing() {
         return climbing;
+    }
+
+    public Skill getSkill(String skillName) {
+        try {
+            return (Skill) Character.class.getDeclaredMethod("get"+skillName).invoke(this);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            System.out.println("No such skill as: " + skillName);
+        }
+        return null;
     }
 
 }

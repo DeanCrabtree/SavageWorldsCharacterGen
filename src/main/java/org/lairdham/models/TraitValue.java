@@ -34,4 +34,7 @@ public enum TraitValue {
     public TraitValue previous() {
         return values()[ordinal() -1];
     }
+    public boolean isGreaterThanOrEqualTo(TraitValue comparedValue) {
+        return numericalValue >= comparedValue.getNumericalValue();
+    }
 }

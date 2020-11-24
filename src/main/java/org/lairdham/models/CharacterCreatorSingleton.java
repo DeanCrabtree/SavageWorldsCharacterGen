@@ -1,9 +1,11 @@
 package org.lairdham.models;
 
+import java.util.List;
+
 public final class CharacterCreatorSingleton {
 
     private Character character;
-    private int edgePoints = 0;
+    private int edgePoints = 100;
     private int hindrancePoints = 0;
     private int attributePoints = 5;
     private int skillPoints = 15;
@@ -13,6 +15,8 @@ public final class CharacterCreatorSingleton {
 
     private int majorHindrancesChosen = 0;
     private int minorHindrancesChosen = 0;
+
+    private List<Edge> settingRequiredEdges;
 
 
     private final static CharacterCreatorSingleton CHARACTER_CREATOR_INSTANCE = new CharacterCreatorSingleton();
@@ -110,5 +114,13 @@ public final class CharacterCreatorSingleton {
 
     public boolean allHindrancesChosen() {
         return majorHindrancesAllowed+minorHindrancesAllowed==0;
+    }
+
+    public List<Edge> getSettingRequiredEdges() {
+        return settingRequiredEdges;
+    }
+
+    public void setSettingRequiredEdges(List<Edge> settingRequiredEdges) {
+        this.settingRequiredEdges = settingRequiredEdges;
     }
 }

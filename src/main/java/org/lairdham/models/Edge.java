@@ -1,6 +1,7 @@
 package org.lairdham.models;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Edge {
 
@@ -58,5 +59,21 @@ public class Edge {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Edge edge = (Edge) o;
+        return Objects.equals(name, edge.name) &&
+                type == edge.type &&
+                Objects.equals(shortDescription, edge.shortDescription) &&
+                Objects.equals(longDescription, edge.longDescription);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type, shortDescription, longDescription);
     }
 }

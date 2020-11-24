@@ -53,10 +53,10 @@ public class CustomRequirementDeserializer extends JsonDeserializer<Requirement>
         return requirement;
     }
 
-    private Requirement<Edge> getEdgeRequirement(JsonNode jsonNode) throws JsonProcessingException {
-        Requirement<Edge> requirement = new Requirement<>();
+    private Requirement<String> getEdgeRequirement(JsonNode jsonNode) throws JsonProcessingException {
+        Requirement<String> requirement = new Requirement<>();
         requirement.setType(Requirement.RequirementType.Edge);
-        requirement.setRequiredValue(objectMapper.readValue(jsonNode.get("requiredValue").toString(), Edge.class));
+        requirement.setRequiredValue(jsonNode.get("requiredValue").textValue());
         return requirement;
     }
 

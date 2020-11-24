@@ -120,8 +120,10 @@ public class HindrancesController {
             hindranceDescriptionTitle.setText(selectedHindrance.getName() + " (" + selectedHindrance.getType().name() + ")");
             hindranceLongDescription.setText(selectedHindrance.getLongDescription());
             hindranceShortDescription.setText("TL;DR " + selectedHindrance.getShortDescription());
-            if (!characterCreatorSingleton.allHindrancesChosen()) {
+            if (characterCreatorSingleton.getRemainingHindrances(selectedHindrance.getType()) > 0) {
                 selectHindranceButton.setDisable(false);
+            } else {
+                selectHindranceButton.setDisable(true);
             }
         }
     }
@@ -135,11 +137,14 @@ public class HindrancesController {
 
             selectedHindrances.add(selectedHindrance);
             characterCreatorSingleton.adjustHindrancesChosen(selectedHindrance.getType(), 1);
-            updateCounterLabels();
-            if (characterCreatorSingleton.allHindrancesChosen()) {
-                selectHindranceButton.setDisable(true);
+            if (selectedHindrance.getType().equals(Hindrance.HindranceType.Major)) {
+                characterCreatorSingleton.adjustHindrancePoints(2);
+            } else {
+                characterCreatorSingleton.adjustHindrancePoints(1);
             }
+            updateCounterLabels();
         }
+        selectHindranceButton.setDisable(true);
         resizeSelectedHindrancesTable();
     }
 
@@ -157,6 +162,11 @@ public class HindrancesController {
         if (selectedHindrance != null) {
             selectedHindrancesTableView.getItems().remove(selectedHindrance);
             characterCreatorSingleton.adjustHindrancesChosen(selectedHindrance.getType(), -1);
+            if (selectedHindrance.getType().equals(Hindrance.HindranceType.Major)) {
+                characterCreatorSingleton.adjustHindrancePoints(-2);
+            } else {
+                characterCreatorSingleton.adjustHindrancePoints(-1);
+            }
             updateCounterLabels();
         }
         removeHindranceButton.setDisable(true);

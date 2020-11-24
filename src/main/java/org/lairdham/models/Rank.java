@@ -22,4 +22,8 @@ public enum Rank {
     public Rank next() {
         return values()[ordinal() +1];
     }
+
+    public boolean isGreaterThanOrEqualTo(Rank comparedRank) {
+        return this.minXPThreshold >= comparedRank.getMinXPThreshold();
+    }
 }
