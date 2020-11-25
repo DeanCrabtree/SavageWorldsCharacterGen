@@ -120,7 +120,8 @@ public class HindrancesController {
             hindranceDescriptionTitle.setText(selectedHindrance.getName() + " (" + selectedHindrance.getType().name() + ")");
             hindranceLongDescription.setText(selectedHindrance.getLongDescription());
             hindranceShortDescription.setText("TL;DR " + selectedHindrance.getShortDescription());
-            if (characterCreatorSingleton.getRemainingHindrances(selectedHindrance.getType()) > 0) {
+            if (characterCreatorSingleton.getRemainingHindrances(selectedHindrance.getType()) > 0
+                    && !selectedHindrancesTableView.getItems().contains(selectedHindrance)) {
                 selectHindranceButton.setDisable(false);
             } else {
                 selectHindranceButton.setDisable(true);
@@ -151,8 +152,10 @@ public class HindrancesController {
     @FXML
     public void viewSelectedHindrance() {
         Hindrance selectedHindrance = selectedHindrancesTableView.getSelectionModel().getSelectedItem();
+
         if (selectedHindrance != null) {
-            removeHindranceButton.setDisable(false);
+            int value = selectedHindrance.getType().equals(Hindrance.HindranceType.Major) ? 2 : 1;
+            removeHindranceButton.setDisable(!(characterCreatorSingleton.getHindrancePoints() >= value));
         }
     }
 

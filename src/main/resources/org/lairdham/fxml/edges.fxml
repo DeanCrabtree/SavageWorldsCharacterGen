@@ -18,19 +18,17 @@
                 <font>
                     <Font size="22.0" />
                 </font>
-<!--                <graphic>-->
-<!--                    <HBox>-->
-<!--                        <ImageView fx:id="topTitleImage" preserveRatio="true" fitWidth="15"/>-->
-<!--                    </HBox>-->
-<!--                </graphic>-->
             </Label>
             <Text wrappingWidth="700" textAlignment="CENTER" text="Edges are unique qualities or gifts that give a hero an advantage in their adventures. They may be taken by spending Hindrance Points, or granted based on Setting or Ancestry."/>
-            <HBox alignment="CENTER" spacing="20.0">
+            <HBox alignment="CENTER" spacing="10.0">
                 <Label fx:id="edgesAvailableLabel">
                     <font>
                         <Font size="16.0"/>
                     </font>
                 </Label>
+                <Button fx:id="buyEdgeButton" text="+" onAction="#spendHindrancePointsForEdge"/>
+                <Button fx:id="sellEdgeButton" text="-" onAction="#spendEdgeForHindrancePoints" visible="false"/>
+                <Pane minWidth="10.0"/>
                 <Label fx:id="hindrancePointsLabel">
                     <font>
                         <Font size="16.0"/>

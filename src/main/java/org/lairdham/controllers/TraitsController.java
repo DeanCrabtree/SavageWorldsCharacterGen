@@ -2,11 +2,8 @@ package org.lairdham.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -16,9 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.scene.text.TextAlignment;
 import org.lairdham.App;
 import org.lairdham.Utils;
 import org.lairdham.models.Character;
@@ -29,13 +24,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TraitsController {
 
     @FXML
-    public Button attributeButton;
+    public Button buyAttributeButton;
     @FXML
-    public Button skillButton;
+    public Button sellAttributeButton;
+    @FXML
+    public Button buySkillButton;
+    @FXML
+    public Button sellSkillButton;
     @FXML
     Label attributePointLabel;
     @FXML
@@ -116,7 +117,12 @@ public class TraitsController {
     Image d10Image;
     Image d12Image;
 
+    //Map of trait values to image representing that value
     HashMap<TraitValue, Image> imageMap = new HashMap<>();
+
+    //Map of skills to imageviews representing them
+    HashMap<Skill, ImageView> skillImageViewMap = new HashMap<>();
+
     HashMap<String, List<String>> traitDescriptions = new HashMap<>();
 
     CharacterCreatorSingleton characterCreatorSingleton;
@@ -132,7 +138,7 @@ public class TraitsController {
         loadTraitImages();
         loadTraitDescriptions();
         defaultImageViews();
-
+        updateButtonsAvailability();
     }
 
     @FXML
@@ -143,6 +149,7 @@ public class TraitsController {
 
     @FXML
     private void prevPage() throws IOException {
+        CharacterCreatorSingleton.getInstance().setCharacter(characterInProgress);
         App.setRoot("hindrances");
     }
 
@@ -163,22 +170,42 @@ public class TraitsController {
                 traitDescriptions.get(clickedLabel.getText()).get(1));
     }
 
+    @FXML
+    private void showHindrancesInfo() throws IOException {
+        Utils.showPopup("Hindrance Points",
+                        "For 2 Hindrance Points you can:\n\t- Raise an attribute one die type, or\n\t- Choose an Edge\n For 1 Hindrance Point you can:\n\t- Gain another Skill Point, or\n\t- Gain additional money equal to your starting funds.",
+                TextAlignment.LEFT);
+    }
+
     private void increaseAttribute(Attribute attribute, ImageView imageView) {
         if (characterCreatorSingleton.getAttributePoints() > 0 &&
                 !attribute.getValue().equals(TraitValue.d12)) {
             adjustAttributePoints(-1);
 
             characterInProgress.adjustTrait(attribute, 1);
+            recoverSpentSkillPointsWhenAttributeIncreased(attribute);
             imageView.setImage(imageMap.get(attribute.getValue()));
+
+            if (characterCreatorSingleton.getAttributePoints() == 0) {
+                skillBox1.setDisable(false);
+                skillBox2.setDisable(false);
+                adjustSkillImageContrasts(1.0, 0.4);
+
+            }
+
+            updateButtonsAvailability();
+
         }
     }
+
     private void reduceAttribute(Attribute attribute, ImageView imageView) {
         if (!attribute.getValue().equals(TraitValue.d4)) {
             adjustAttributePoints(1);
 
             characterInProgress.adjustTrait(attribute, -1);
             imageView.setImage(imageMap.get(attribute.getValue()));
-            nextButton.setDisable(true);
+            reduceSkillLevelWithAttribute(attribute);
+            updateButtonsAvailability();
         }
     }
 
@@ -217,7 +244,7 @@ public class TraitsController {
         reduceAttribute(characterInProgress.getVigor(), vigorImageView);
     }
 
-    private void increaseSkill(Skill skill, ImageView imageView) {
+    private void increaseSkill(Skill skill) {
         if (characterCreatorSingleton.getSkillPoints() > 0
                 && !skill.getValue().equals(TraitValue.d12)) {
             if (skill.isEqualToOrGreaterThanLinkedAttribute()) {
@@ -231,11 +258,13 @@ public class TraitsController {
             }
 
             characterInProgress.adjustTrait(skill, 1);
-            imageView.setImage(imageMap.get(skill.getValue()));
+            skillImageViewMap.get(skill).setImage(imageMap.get(skill.getValue()));
+
+            updateButtonsAvailability();
         }
 
     }
-    private void reduceSkill(Skill skill, ImageView imageView) {
+    private void reduceSkill(Skill skill) {
         if (!skill.getValue().equals(TraitValue.noValue)) {
             if (skill.isGreaterThanLinkedAttribute()) {
                 adjustSkillPoints(2);
@@ -244,232 +273,208 @@ public class TraitsController {
             }
 
             characterInProgress.adjustTrait(skill, -1);
-            imageView.setImage(imageMap.get(skill.getValue()));
-            nextButton.setDisable(true);
+            skillImageViewMap.get(skill).setImage(imageMap.get(skill.getValue()));
+
+            updateButtonsAvailability();
         }
-    }
-    private void resetSkill(Skill skill, ImageView imageView) {
-        skill.setValue(TraitValue.noValue);
-        imageView.setImage(noValueImage);
     }
 
     public void increaseBoatingValue() {
-        increaseSkill(characterInProgress.getBoating(), boatingImageView);
+        increaseSkill(characterInProgress.getBoating());
 
     }
     public void reduceBoatingValue() {
-        reduceSkill(characterInProgress.getBoating(), boatingImageView);
+        reduceSkill(characterInProgress.getBoating());
     }
 
     public void increaseDrivingValue() {
-        increaseSkill(characterInProgress.getDriving(), drivingImageView);
+        increaseSkill(characterInProgress.getDriving());
     }
     public void reduceDrivingValue() {
-        reduceSkill(characterInProgress.getDriving(), drivingImageView);
+        reduceSkill(characterInProgress.getDriving());
     }
 
     public void increaseFightingValue() {
-        increaseSkill(characterInProgress.getFighting(), fightingImageView);
+        increaseSkill(characterInProgress.getFighting());
     }
     public void reduceFightingValue() {
-        reduceSkill(characterInProgress.getFighting(), fightingImageView);
+        reduceSkill(characterInProgress.getFighting());
     }
 
     public void increaseLockpickingValue() {
-        increaseSkill(characterInProgress.getLockpicking(), lockpickingImageView);
+        increaseSkill(characterInProgress.getLockpicking());
     }
     public void reduceLockpickingValue() {
-        reduceSkill(characterInProgress.getLockpicking(), lockpickingImageView);
+        reduceSkill(characterInProgress.getLockpicking());
     }
 
     public void increasePilotingValue() {
-        increaseSkill(characterInProgress.getPiloting(), pilotingImageView);
+        increaseSkill(characterInProgress.getPiloting());
     }
     public void reducePilotingValue() {
-        reduceSkill(characterInProgress.getPiloting(), pilotingImageView);
+        reduceSkill(characterInProgress.getPiloting());
     }
 
     public void increaseRidingValue() {
-        increaseSkill(characterInProgress.getRiding(), ridingImageView);
+        increaseSkill(characterInProgress.getRiding());
     }
     public void reduceRidingValue() {
-        reduceSkill(characterInProgress.getRiding(), ridingImageView);
+        reduceSkill(characterInProgress.getRiding());
     }
 
     public void increaseShootingValue() {
-        increaseSkill(characterInProgress.getShooting(), shootingImageView);
+        increaseSkill(characterInProgress.getShooting());
     }
     public void reduceShootingValue() {
-        reduceSkill(characterInProgress.getShooting(), shootingImageView);
+        reduceSkill(characterInProgress.getShooting());
     }
 
     public void increaseStealthValue() {
-        increaseSkill(characterInProgress.getStealth(), stealthImageView);
+        increaseSkill(characterInProgress.getStealth());
     }
     public void reduceStealthValue() {
-        reduceSkill(characterInProgress.getStealth(), stealthImageView);
+        reduceSkill(characterInProgress.getStealth());
     }
 
     public void increaseSwimmingValue() {
-        increaseSkill(characterInProgress.getSwimming(), swimmingImageView);
+        increaseSkill(characterInProgress.getSwimming());
     }
     public void reduceSwimmingValue() {
-        reduceSkill(characterInProgress.getSwimming(), swimmingImageView);
+        reduceSkill(characterInProgress.getSwimming());
     }
 
     public void increaseThrowingValue() {
-        increaseSkill(characterInProgress.getThrowing(), throwingImageView);
+        increaseSkill(characterInProgress.getThrowing());
     }
     public void reduceThrowingValue() {
-        reduceSkill(characterInProgress.getThrowing(), throwingImageView);
+        reduceSkill(characterInProgress.getThrowing());
     }
 
     public void increaseGamblingValue() {
-        increaseSkill(characterInProgress.getGambling(), gamblingImageView);
+        increaseSkill(characterInProgress.getGambling());
     }
     public void reduceGamblingValue() {
-        reduceSkill(characterInProgress.getGambling(), gamblingImageView);
+        reduceSkill(characterInProgress.getGambling());
     }
 
     public void increaseHealingValue() {
-        increaseSkill(characterInProgress.getHealing(), healingImageView);
+        increaseSkill(characterInProgress.getHealing());
     }
     public void reduceHealingValue() {
-        reduceSkill(characterInProgress.getHealing(), healingImageView);
+        reduceSkill(characterInProgress.getHealing());
     }
 
     public void increaseInvestigationValue() {
-        increaseSkill(characterInProgress.getInvestigation(), investigationImageView);
+        increaseSkill(characterInProgress.getInvestigation());
     }
     public void reduceInvestigationValue() {
-        reduceSkill(characterInProgress.getInvestigation(), investigationImageView);
+        reduceSkill(characterInProgress.getInvestigation());
     }
 
     public void increaseNoticeValue() {
-        increaseSkill(characterInProgress.getNotice(), noticeImageView);
+        increaseSkill(characterInProgress.getNotice());
     }
     public void reduceNoticeValue() {
-        reduceSkill(characterInProgress.getNotice(), noticeImageView);
+        reduceSkill(characterInProgress.getNotice());
     }
 
     public void increaseRepairValue() {
-        increaseSkill(characterInProgress.getRepair(), repairImageView);
+        increaseSkill(characterInProgress.getRepair());
     }
     public void reduceRepairValue() {
-        reduceSkill(characterInProgress.getRepair(), repairImageView);
+        reduceSkill(characterInProgress.getRepair());
     }
 
     public void increaseStreetwiseValue() {
-        increaseSkill(characterInProgress.getStreetwise(), streetwiseImageView);
+        increaseSkill(characterInProgress.getStreetwise());
     }
     public void reduceStreetwiseValue() {
-        reduceSkill(characterInProgress.getStreetwise(), streetwiseImageView);
+        reduceSkill(characterInProgress.getStreetwise());
     }
 
     public void increaseSurvivalValue() {
-        increaseSkill(characterInProgress.getSurvival(), survivalImageView);
+        increaseSkill(characterInProgress.getSurvival());
     }
     public void reduceSurvivalValue() {
-        reduceSkill(characterInProgress.getSurvival(), survivalImageView);
+        reduceSkill(characterInProgress.getSurvival());
     }
 
     public void increaseTauntValue() {
-        increaseSkill(characterInProgress.getTaunt(), tauntImageView);
+        increaseSkill(characterInProgress.getTaunt());
     }
     public void reduceTauntValue() {
-        reduceSkill(characterInProgress.getTaunt(), tauntImageView);
+        reduceSkill(characterInProgress.getTaunt());
     }
 
     public void increaseTrackingValue() {
-        increaseSkill(characterInProgress.getTracking(), trackingImageView);
+        increaseSkill(characterInProgress.getTracking());
     }
     public void reduceTrackingValue() {
-        reduceSkill(characterInProgress.getTracking(), trackingImageView);
+        reduceSkill(characterInProgress.getTracking());
     }
 
     public void increaseIntimidationValue() {
-        increaseSkill(characterInProgress.getIntimidation(), intimidationImageView);
+        increaseSkill(characterInProgress.getIntimidation());
     }
     public void reduceIntimidationValue() {
-        reduceSkill(characterInProgress.getIntimidation(), intimidationImageView);
+        reduceSkill(characterInProgress.getIntimidation());
     }
 
     public void increasePersuasionValue() {
-        increaseSkill(characterInProgress.getPersuasion(), persuasionImageView);
+        increaseSkill(characterInProgress.getPersuasion());
     }
     public void reducePersuasionValue() {
-        reduceSkill(characterInProgress.getPersuasion(), persuasionImageView);
+        reduceSkill(characterInProgress.getPersuasion());
     }
 
     public void increaseClimbingValue() {
-        increaseSkill(characterInProgress.getClimbing(), climbingImageView);
+        increaseSkill(characterInProgress.getClimbing());
     }
     public void reduceClimbingValue() {
-        reduceSkill(characterInProgress.getClimbing(), climbingImageView);
+        reduceSkill(characterInProgress.getClimbing());
     }
-
 
 
     private void adjustAttributePoints(int value) {
         characterCreatorSingleton.adjustAttributePoints(value);
         attributePointLabel.setText("Attribute Points: " + characterCreatorSingleton.getAttributePoints());
-
-        if (characterCreatorSingleton.getAttributePoints() == 0) {
-            skillBox1.setDisable(false);
-            skillBox2.setDisable(false);
-            attributeButton.setVisible(true);
-            adjustSkillImageContrasts(1.0, 0.4);
-        } else {
-            adjustSkillImageContrasts(0.4, 0.8);
-            resetSpentSkillPoints();
-            skillBox1.setDisable(true);
-            skillBox2.setDisable(true);
-            attributeButton.setVisible(false);
-        }
-
-        if (characterCreatorSingleton.getHindrancePoints() == 0) {
-            attributeButton.setVisible(false);
-        }
-
-    }
-
-    private void resetSpentSkillPoints() {
-        characterCreatorSingleton.setSkillPoints(15);
-        skillPointLabel.setText("Skill Points: " + characterCreatorSingleton.getSkillPoints());
-
-        resetSkill(characterInProgress.getBoating(), boatingImageView);
-        resetSkill(characterInProgress.getDriving(), drivingImageView);
-        resetSkill(characterInProgress.getFighting(), fightingImageView);
-        resetSkill(characterInProgress.getLockpicking(), lockpickingImageView);
-        resetSkill(characterInProgress.getPiloting(), pilotingImageView);
-        resetSkill(characterInProgress.getRiding(), ridingImageView);
-        resetSkill(characterInProgress.getShooting(), shootingImageView);
-        resetSkill(characterInProgress.getStealth(), stealthImageView);
-        resetSkill(characterInProgress.getSwimming(), swimmingImageView);
-        resetSkill(characterInProgress.getThrowing(), throwingImageView);
-        resetSkill(characterInProgress.getGambling(), gamblingImageView);
-        resetSkill(characterInProgress.getHealing(), healingImageView);
-        resetSkill(characterInProgress.getInvestigation(), investigationImageView);
-        resetSkill(characterInProgress.getNotice(), noticeImageView);
-        resetSkill(characterInProgress.getRepair(), repairImageView);
-        resetSkill(characterInProgress.getStreetwise(), streetwiseImageView);
-        resetSkill(characterInProgress.getSurvival(), survivalImageView);
-        resetSkill(characterInProgress.getTaunt(), tauntImageView);
-        resetSkill(characterInProgress.getTracking(), trackingImageView);
-        resetSkill(characterInProgress.getIntimidation(), intimidationImageView);
-        resetSkill(characterInProgress.getPersuasion(), persuasionImageView);
-        resetSkill(characterInProgress.getClimbing(), climbingImageView);
     }
 
     private void adjustSkillPoints(int value) {
         characterCreatorSingleton.adjustSkillPoints(value);
         skillPointLabel.setText("Skill Points: " + characterCreatorSingleton.getSkillPoints());
+    }
 
-        if(characterCreatorSingleton.getSkillPoints() == 0) {
-            nextButton.setDisable(false);
-        } else {
-            nextButton.setDisable(true);
+    private void recoverSpentSkillPointsWhenAttributeIncreased(Attribute attribute) {
+        List<Skill> relevantSkills = characterInProgress.getAllSkills().stream()
+                .filter(skill -> skill.getLinkedAttribute().getName().equals(attribute.getName())).collect(Collectors.toList());
+        relevantSkills.forEach(skill -> {
+            if (skill.isEqualToOrGreaterThanLinkedAttribute()) {
+                adjustSkillPoints(1);
+            }
+        });
+    }
+
+    private void reduceSkillLevelWithAttribute(Attribute attribute) {
+        List<Skill> relevantSkills = characterInProgress.getAllSkills().stream()
+                .filter(skill -> skill.getLinkedAttribute().getName().equals(attribute.getName())).collect(Collectors.toList());
+        relevantSkills.forEach(skill -> {
+            while (skill.isGreaterThanLinkedAttribute()) {
+                if (skill.getValue().getNumericalValue() - attribute.getValue().getNumericalValue() > 2) {
+                    adjustSkillPoints(2);
+                } else {
+                    adjustSkillPoints(1);
+                }
+                skill.decrementValue();
+
+                skillImageViewMap.get(skill).setImage(imageMap.get(skill.getValue()));
+            }
+        });
+
+        if (characterCreatorSingleton.getSkillPoints() > 0 && characterCreatorSingleton.getExtraSkillPointsBought() > 0) {
+            sellSkillButton.setVisible(true);
         }
+
     }
 
     private void loadTraitImages() {
@@ -501,43 +506,49 @@ public class TraitsController {
     }
 
     private void defaultImageViews() {
+
         agilityImageView.setImage(imageMap.get(characterInProgress.getAgility().getValue()));
         smartsImageView.setImage(imageMap.get(characterInProgress.getSmarts().getValue()));
         spiritImageView.setImage(imageMap.get(characterInProgress.getSpirit().getValue()));
         strengthImageView.setImage(imageMap.get(characterInProgress.getStrength().getValue()));
         vigorImageView.setImage(imageMap.get(characterInProgress.getVigor().getValue()));
 
-        boatingImageView.setImage(imageMap.get(characterInProgress.getBoating().getValue()));
-        drivingImageView.setImage(imageMap.get(characterInProgress.getDriving().getValue()));
-        fightingImageView.setImage(imageMap.get(characterInProgress.getFighting().getValue()));
-        lockpickingImageView.setImage(imageMap.get(characterInProgress.getLockpicking().getValue()));
-        pilotingImageView.setImage(imageMap.get(characterInProgress.getPiloting().getValue()));
-        ridingImageView.setImage(imageMap.get(characterInProgress.getRiding().getValue()));
-        shootingImageView.setImage(imageMap.get(characterInProgress.getShooting().getValue()));
-        stealthImageView.setImage(imageMap.get(characterInProgress.getStealth().getValue()));
-        swimmingImageView.setImage(imageMap.get(characterInProgress.getSwimming().getValue()));
-        throwingImageView.setImage(imageMap.get(characterInProgress.getThrowing().getValue()));
-        gamblingImageView.setImage(imageMap.get(characterInProgress.getGambling().getValue()));
-        healingImageView.setImage(imageMap.get(characterInProgress.getHealing().getValue()));
-        investigationImageView.setImage(imageMap.get(characterInProgress.getInvestigation().getValue()));
-        noticeImageView.setImage(imageMap.get(characterInProgress.getNotice().getValue()));
-        repairImageView.setImage(imageMap.get(characterInProgress.getRepair().getValue()));
-        streetwiseImageView.setImage(imageMap.get(characterInProgress.getStreetwise().getValue()));
-        survivalImageView.setImage(imageMap.get(characterInProgress.getSurvival().getValue()));
-        tauntImageView.setImage(imageMap.get(characterInProgress.getTaunt().getValue()));
-        trackingImageView.setImage(imageMap.get(characterInProgress.getTracking().getValue()));
-        intimidationImageView.setImage(imageMap.get(characterInProgress.getIntimidation().getValue()));
-        persuasionImageView.setImage(imageMap.get(characterInProgress.getPersuasion().getValue()));
-        climbingImageView.setImage(imageMap.get(characterInProgress.getClimbing().getValue()));
+        skillImageViewMap.put(characterInProgress.getBoating(), boatingImageView);
+        skillImageViewMap.put(characterInProgress.getDriving(), drivingImageView);
+        skillImageViewMap.put(characterInProgress.getFighting(), fightingImageView);
+        skillImageViewMap.put(characterInProgress.getLockpicking(), lockpickingImageView);
+        skillImageViewMap.put(characterInProgress.getPiloting(), pilotingImageView);
+        skillImageViewMap.put(characterInProgress.getRiding(), ridingImageView);
+        skillImageViewMap.put(characterInProgress.getShooting(), shootingImageView);
+        skillImageViewMap.put(characterInProgress.getStealth(), stealthImageView);
+        skillImageViewMap.put(characterInProgress.getSwimming(), swimmingImageView);
+        skillImageViewMap.put(characterInProgress.getThrowing(), throwingImageView);
+        skillImageViewMap.put(characterInProgress.getGambling(), gamblingImageView);
+        skillImageViewMap.put(characterInProgress.getHealing(), healingImageView);
+        skillImageViewMap.put(characterInProgress.getInvestigation(), investigationImageView);
+        skillImageViewMap.put(characterInProgress.getNotice(), noticeImageView);
+        skillImageViewMap.put(characterInProgress.getRepair(), repairImageView);
+        skillImageViewMap.put(characterInProgress.getStreetwise(), streetwiseImageView);
+        skillImageViewMap.put(characterInProgress.getSurvival(), survivalImageView);
+        skillImageViewMap.put(characterInProgress.getTaunt(), tauntImageView);
+        skillImageViewMap.put(characterInProgress.getTracking(), trackingImageView);
+        skillImageViewMap.put(characterInProgress.getIntimidation(), intimidationImageView);
+        skillImageViewMap.put(characterInProgress.getPersuasion(), persuasionImageView);
+        skillImageViewMap.put(characterInProgress.getClimbing(), climbingImageView);
 
-        if (characterCreatorSingleton.getAttributePoints() > 0) {
+        for (Map.Entry<Skill, ImageView> entry : skillImageViewMap.entrySet()) {
+            entry.getValue().setImage(imageMap.get(entry.getKey().getValue()));
+        }
+
+        if (characterCreatorSingleton.getAttributePoints() == 0 && characterCreatorSingleton.getHindrancePoints() > 1) {
+            buyAttributeButton.setVisible(true);
+        }
+
+        if (characterCreatorSingleton.getSkillPoints() == 15) {
             adjustSkillImageContrasts(0.4, 0.8);
         } else {
             skillBox1.setDisable(false);
             skillBox2.setDisable(false);
-            if (characterCreatorSingleton.getSkillPoints() == 0) {
-                nextButton.setDisable(false);
-            }
         }
 
     }
@@ -547,47 +558,81 @@ public class TraitsController {
         colorAdjust.setContrast(contrast);
         colorAdjust.setBrightness(brightness);
 
-        boatingImageView.setEffect(colorAdjust);
-        drivingImageView.setEffect(colorAdjust);
-        fightingImageView.setEffect(colorAdjust);
-        lockpickingImageView.setEffect(colorAdjust);
-        pilotingImageView.setEffect(colorAdjust);
-        ridingImageView.setEffect(colorAdjust);
-        shootingImageView.setEffect(colorAdjust);
-        stealthImageView.setEffect(colorAdjust);
-        swimmingImageView.setEffect(colorAdjust);
-        throwingImageView.setEffect(colorAdjust);
-        gamblingImageView.setEffect(colorAdjust);
-        healingImageView.setEffect(colorAdjust);
-        investigationImageView.setEffect(colorAdjust);
-        noticeImageView.setEffect(colorAdjust);
-        repairImageView.setEffect(colorAdjust);
-        streetwiseImageView.setEffect(colorAdjust);
-        survivalImageView.setEffect(colorAdjust);
-        tauntImageView.setEffect(colorAdjust);
-        trackingImageView.setEffect(colorAdjust);
-        intimidationImageView.setEffect(colorAdjust);
-        persuasionImageView.setEffect(colorAdjust);
-        climbingImageView.setEffect(colorAdjust);
+        for (ImageView imageView : skillImageViewMap.values()) {
+            imageView.setEffect(colorAdjust);
+        }
     }
 
     public void spendHindrancePointsForAttributePoint() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Spend 2 Hindrance Points to gain 1 Attribute Point? This action cannot be undone.", ButtonType.YES, ButtonType.NO);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Spend 2 Hindrance Points to gain 1 Attribute Point?", ButtonType.YES, ButtonType.NO);
         alert.showAndWait();
 
         if(alert.getResult() == ButtonType.YES) {
             characterCreatorSingleton.adjustHindrancePoints(-2);
             characterCreatorSingleton.adjustAttributePoints(1);
+            characterCreatorSingleton.adjustExtraAttributePointsBought(1);
             attributePointLabel.setText("Attribute Points: " + characterCreatorSingleton.getAttributePoints());
-            skillPointLabel.setText("Skill Points: " + characterCreatorSingleton.getSkillPoints());
             hindrancePointLabel.setText("Hindrance Points: " + characterCreatorSingleton.getHindrancePoints());
-            skillBox1.setDisable(true);
-            skillBox2.setDisable(true);
-            adjustSkillImageContrasts(0.4, 0.8);
         }
 
-        if (characterCreatorSingleton.getHindrancePoints() == 0) {
-            attributeButton.setVisible(false);
+        updateButtonsAvailability();
+
+    }
+
+    public void spendAttributeForHindrancePoints() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Revert 1 Attribute Point into 2 Hindrance Points?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            characterCreatorSingleton.adjustHindrancePoints(2);
+            characterCreatorSingleton.adjustAttributePoints(-1);
+            characterCreatorSingleton.adjustExtraAttributePointsBought(-1);
+            attributePointLabel.setText("Attribute Points: " + characterCreatorSingleton.getAttributePoints());
+            hindrancePointLabel.setText("Hindrance Points: " + characterCreatorSingleton.getHindrancePoints());
         }
+
+        updateButtonsAvailability();
+    }
+
+    public void spendHindrancePointForSkillPoint() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Spend 1 Hindrance Point to gain 1 Skill Point?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if(alert.getResult() == ButtonType.YES) {
+            characterCreatorSingleton.adjustHindrancePoints(-1);
+            characterCreatorSingleton.adjustSkillPoints(1);
+            characterCreatorSingleton.adjustExtraSkillPointsBought(1);
+            skillPointLabel.setText("Skill Points: " + characterCreatorSingleton.getSkillPoints());
+            hindrancePointLabel.setText("Hindrance Points: " + characterCreatorSingleton.getHindrancePoints());
+            sellSkillButton.setVisible(true);
+        }
+
+        updateButtonsAvailability();
+
+    }
+
+    public void spendSkillForHindrancePoint() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Revert 1 Skill Point into 1 Hindrance Point?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            characterCreatorSingleton.adjustHindrancePoints(1);
+            characterCreatorSingleton.adjustSkillPoints(-1);
+            characterCreatorSingleton.adjustExtraSkillPointsBought(-1);
+            skillPointLabel.setText("Skill Points: " + characterCreatorSingleton.getSkillPoints());
+            hindrancePointLabel.setText("Hindrance Points: " + characterCreatorSingleton.getHindrancePoints());
+        }
+
+        updateButtonsAvailability();
+    }
+
+    private void updateButtonsAvailability() {
+        buyAttributeButton.setVisible((characterCreatorSingleton.getHindrancePoints() > 1) && (characterCreatorSingleton.getAttributePoints()==0));
+        sellAttributeButton.setVisible(characterCreatorSingleton.getExtraAttributePointsBought() > 0 && characterCreatorSingleton.getAttributePoints() > 0);
+
+        buySkillButton.setVisible((characterCreatorSingleton.getHindrancePoints() > 0) && (characterCreatorSingleton.getSkillPoints()==0));
+        sellSkillButton.setVisible(characterCreatorSingleton.getExtraSkillPointsBought() > 0 && characterCreatorSingleton.getSkillPoints() > 0);
+
+        nextButton.setDisable(!(characterCreatorSingleton.getSkillPoints()==0 && characterCreatorSingleton.getAttributePoints()==0));
     }
 }

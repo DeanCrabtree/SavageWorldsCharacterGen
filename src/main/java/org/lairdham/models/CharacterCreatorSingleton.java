@@ -5,10 +5,13 @@ import java.util.List;
 public final class CharacterCreatorSingleton {
 
     private Character character;
-    private int edgePoints = 100;
+    private int edgePoints = 1;
+    private int extraEdgePointsBought = 0;
     private int hindrancePoints = 0;
     private int attributePoints = 5;
+    private int extraAttributePointsBought = 0;
     private int skillPoints = 15;
+    private int extraSkillPointsBought = 0;
 
     private int majorHindrancesAllowed = 1;
     private int minorHindrancesAllowed = 2;
@@ -43,6 +46,18 @@ public final class CharacterCreatorSingleton {
         return edgePoints;
     }
 
+    public void adjustExtraEdgePointsBought(int amount) {
+        extraEdgePointsBought += amount;
+    }
+
+    public void setExtraEdgePointsBought(int amount) {
+        this.extraEdgePointsBought = amount;
+    }
+
+    public int getExtraEdgePointsBought() {
+        return extraEdgePointsBought;
+    }
+
     public void adjustHindrancePoints(int amount) {
         hindrancePoints+=amount;
     }
@@ -59,6 +74,18 @@ public final class CharacterCreatorSingleton {
         return attributePoints;
     }
 
+    public void adjustExtraAttributePointsBought(int amount) {
+        extraAttributePointsBought += amount;
+    }
+
+    public void setExtraAttributePointsBought(int amount) {
+        this.extraAttributePointsBought = amount;
+    }
+
+    public int getExtraAttributePointsBought() {
+        return extraAttributePointsBought;
+    }
+
     public void adjustSkillPoints(int amount) {
         skillPoints+=amount;
     }
@@ -69,6 +96,18 @@ public final class CharacterCreatorSingleton {
 
     public int getSkillPoints() {
         return skillPoints;
+    }
+
+    public void adjustExtraSkillPointsBought(int amount) {
+        extraSkillPointsBought += amount;
+    }
+
+    public void setExtraSkillPointsBought(int amount) {
+        this.extraSkillPointsBought = amount;
+    }
+
+    public int getExtraSkillPointsBought() {
+        return extraSkillPointsBought;
     }
 
     public int getHindrancesAllowed(Hindrance.HindranceType type) {

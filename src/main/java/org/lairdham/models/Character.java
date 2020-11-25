@@ -1,10 +1,8 @@
 package org.lairdham.models;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Character {
 
@@ -305,6 +303,17 @@ public class Character {
             System.out.println("No such skill as: " + skillName);
         }
         return null;
+    }
+
+    public List<Skill> getAllSkills() {
+        return Arrays.stream(this.getClass().getDeclaredFields()).filter(field -> field.getType().equals(Skill.class)).map(field -> {
+            try {
+                return (Skill) field.get(this);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }).collect(Collectors.toList());
     }
 
 }

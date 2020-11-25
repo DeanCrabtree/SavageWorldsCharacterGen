@@ -4,12 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -51,6 +49,10 @@ public class EdgesController {
     public Label requirementsNotMetLabel;
     @FXML
     public Button removeEdgeButton;
+    @FXML
+    public Button buyEdgeButton;
+    @FXML
+    public Button sellEdgeButton;
 
     private HashMap<String, Edge> allEdges = new HashMap<>();
     private List<Edge> lockedEdges = new ArrayList<>();
@@ -143,7 +145,7 @@ public class EdgesController {
             edgeShortDescription.setText("TL;DR " + selectedEdge.getShortDescription());
 
             if (requirementsMet(selectedEdge)) {
-                selectEdgeButton.setDisable(false);
+                selectEdgeButton.setDisable((characterCreatorSingleton.getEdgePoints() == 0) || selectedEdgesTableView.getItems().contains(selectedEdge));
                 requirementsNotMetLabel.setVisible(false);
             } else {
                 selectEdgeButton.setDisable(true);
@@ -164,7 +166,9 @@ public class EdgesController {
             characterCreatorSingleton.adjustEdgePoints(-1);
             updateCounterLabels();
             resizeSelectedEdgesTable();
+            selectEdgeButton.setDisable(true);
         }
+        updateBuySellButtonsAvailability();
     }
 
     @FXML
@@ -190,6 +194,7 @@ public class EdgesController {
             removeEdgeButton.setDisable(true);
         }
         viewEdge();
+        updateBuySellButtonsAvailability();
     }
 
     private boolean requirementsMet(Edge selectedEdge) {
@@ -278,5 +283,43 @@ public class EdgesController {
             Text data = new Text(cellData.toString());
             column.setMinWidth(data.getLayoutBounds().getWidth() + 10.0);
         }
+    }
+
+    public void spendHindrancePointsForEdge() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Spend 2 Hindrance Points to gain an Edge?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if(alert.getResult() == ButtonType.YES) {
+            characterCreatorSingleton.adjustHindrancePoints(-2);
+            characterCreatorSingleton.adjustEdgePoints(1);
+            characterCreatorSingleton.adjustExtraEdgePointsBought(1);
+            edgesAvailableLabel.setText("Edges: " + characterCreatorSingleton.getEdgePoints());
+            hindrancePointsLabel.setText("Hindrance Points: " + characterCreatorSingleton.getHindrancePoints());
+            viewEdge();
+        }
+
+        updateBuySellButtonsAvailability();
+    }
+
+    public void spendEdgeForHindrancePoints() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Revert Edge to 2 Hindrance Points?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if(alert.getResult() == ButtonType.YES) {
+            characterCreatorSingleton.adjustHindrancePoints(2);
+            characterCreatorSingleton.adjustEdgePoints(-1);
+            characterCreatorSingleton.adjustExtraEdgePointsBought(-1);
+            edgesAvailableLabel.setText("Edges: " + characterCreatorSingleton.getEdgePoints());
+            hindrancePointsLabel.setText("Hindrance Points: " + characterCreatorSingleton.getHindrancePoints());
+            viewEdge();
+        }
+
+        updateBuySellButtonsAvailability();
+    }
+
+    private void updateBuySellButtonsAvailability() {
+        buyEdgeButton.setVisible(characterCreatorSingleton.getHindrancePoints() > 1);
+        sellEdgeButton.setVisible(characterCreatorSingleton.getExtraEdgePointsBought() > 0 && characterCreatorSingleton.getEdgePoints() > 0);
+
     }
 }
