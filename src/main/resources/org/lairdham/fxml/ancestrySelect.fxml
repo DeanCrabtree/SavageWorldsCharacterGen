@@ -22,9 +22,9 @@
         </Label>
     </top>
     <center>
-        <SplitPane dividerPositions="0.33444816053511706" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="600" prefWidth="700">
+        <SplitPane dividerPositions="0.33444816053511706" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600" minWidth="600" prefWidth="700">
             <AnchorPane>
-                <ListView fx:id="ancestryList" onMouseClicked="#selectAncestry"/>
+                <ListView fx:id="ancestryList" onMouseClicked="#selectAncestry" minHeight="600"/>
             </AnchorPane>
             <AnchorPane>
                     <Text fx:id="ancestryDescription" layoutX="50.0" layoutY="53.0" wrappingWidth="350.0" />
@@ -34,7 +34,7 @@
     <bottom>
         <ToolBar>
             <Pane HBox.hgrow="ALWAYS"/>
-            <Button disable="true" text="Prev" minWidth="80.0"/>
+            <Button text="Prev" onAction="#prevPage" minWidth="80.0"/>
             <Separator/>
             <Button disable="true" fx:id="nextButton" onAction="#nextPage" text="Next" minWidth="80.0"/>
         </ToolBar>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lairdham.controllers.SettingSelectController">
+    <top>
+        <VBox alignment="CENTER" spacing="10.0">
+            <Label text="Settings and Rulebooks" contentDisplay="RIGHT">
+                <font>
+                    <Font size="22.0" />
+                </font>
+            </Label>
+            <Text wrappingWidth="700" textAlignment="CENTER" text="Please select any relevant Settings and Rulebooks. "/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="10.0">
+            <SplitPane dividerPositions="0.33444816053511706" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="600" prefWidth="700" prefHeight="400">
+                <AnchorPane>
+                    <ListView fx:id="sourceBooksListView" onMouseClicked="#viewSourceBook"/>
+                </AnchorPane>
+                <VBox spacing="20.0" alignment="TOP_CENTER">
+                    <Label fx:id="sourceBookTitle">
+                        <font>
+                            <Font size="18.0"/>
+                        </font>
+                    </Label>
+                    <Text fx:id="sourceBookDescription" wrappingWidth="350.0" />
+                    <Pane VBox.vgrow="ALWAYS"/>
+                    <ToolBar >
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <Button disable="true" fx:id="selectSourceBookButton" onAction="#selectSourceBook" text="Select Source Book" minWidth="80.0"/>
+                    </ToolBar>
+                </VBox>
+            </SplitPane>
+            <TableView fx:id="selectedSettings" onMouseClicked="#viewSelectedSourceBook" minWidth="600" minHeight="100" maxWidth="700" prefWidth="700">
+                <columns>
+                    <TableColumn text="Name">
+                        <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Type">
+                        <cellValueFactory><PropertyValueFactory property="type"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Effects">
+                        <cellValueFactory><PropertyValueFactory property="shortDescription"/></cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
+            <Button fx:id="removeSourceBookButton" disable="true" text="Remove Source Book" onAction="#removeSelectedSourceBook"/>
+        </VBox>
+    </center>
+
+    <bottom>
+        <ToolBar>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button disable="true" onAction="#prevPage" text="Prev" minWidth="80.0"/>
+            <Separator/>
+            <Button fx:id="nextButton" onAction="#nextPage" text="Next" minWidth="80.0"/>
+        </ToolBar>
+    </bottom>
+</BorderPane>

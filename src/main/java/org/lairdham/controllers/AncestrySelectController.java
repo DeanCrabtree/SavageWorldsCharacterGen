@@ -60,6 +60,11 @@ public class AncestrySelectController {
     }
 
     @FXML
+    private void prevPage() throws IOException {
+        App.setRoot("settingSelect");
+    }
+
+    @FXML
     private void selectAncestry() {
         Ancestry selectedAncestry = ancestryDataMap.get(ancestryList.getSelectionModel().getSelectedItem());
         if (selectedAncestry != null) {

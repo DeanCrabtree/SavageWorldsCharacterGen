@@ -4,16 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import org.lairdham.App;
-import org.lairdham.Utils;
 import org.lairdham.models.Character;
 import org.lairdham.models.*;
 
@@ -95,6 +91,7 @@ public class EdgesController {
             selectedEdgesTableView.getSelectionModel().select(null);
         }
 
+        updateBuySellButtonsAvailability();
         updateCounterLabels();
         resizeSelectedEdgesTable();
     }
@@ -105,8 +102,10 @@ public class EdgesController {
     }
 
     @FXML
-    public void nextPage() {
-
+    public void nextPage() throws IOException {
+        App.setRoot("spc/superPowers");
+        characterInProgress.setEdges(selectedEdgesTableView.getItems());
+        characterCreatorSingleton.setCharacter(characterInProgress);
     }
 
     @FXML
@@ -114,25 +113,6 @@ public class EdgesController {
         App.setRoot("traits");
         characterInProgress.setEdges(selectedEdgesTableView.getItems());
         characterCreatorSingleton.setCharacter(characterInProgress);
-    }
-
-    @FXML
-    private void mouseOver() {
-        App.setCursor(Cursor.HAND);
-    }
-
-    @FXML
-    private void mouseOff() {
-        App.setCursor(Cursor.DEFAULT);
-    }
-
-    @FXML
-    private void showEdgesInfo() throws IOException {
-        Utils.showPopup("Hindrances and Hindrance Points",
-                "Hindrances are character flaws and physical handicaps that occasionally make life a little tougher for your hero. " +
-                        "Depending on the setting you can take a certain number of Major and Minor Hindrances. A Major Hindrance is worth 2 Hindrance Points, while a Minor Hindrance is worth 1.\n\n" +
-                        "For 2 Hindrance Points you can:\n\t- Raise an attribute one die type, or\n\t- Choose an Edge\n For 1 Hindrance Point you can:\n\t- Gain another Skill Point, or\n\t- Gain additional money equal to your starting funds.",
-                TextAlignment.LEFT);
     }
 
     @FXML
@@ -320,6 +300,5 @@ public class EdgesController {
     private void updateBuySellButtonsAvailability() {
         buyEdgeButton.setVisible(characterCreatorSingleton.getHindrancePoints() > 1);
         sellEdgeButton.setVisible(characterCreatorSingleton.getExtraEdgePointsBought() > 0 && characterCreatorSingleton.getEdgePoints() > 0);
-
     }
 }

@@ -29,6 +29,6 @@ public class CharacterListController {
         edge.setRequirements(requirements);
         settingRequiredEdges.add(edge);
         CharacterCreatorSingleton.getInstance().setSettingRequiredEdges(settingRequiredEdges);
-        App.setRoot("ancestrySelect");
+        App.setRoot("settingSelect");
     }
 }
