@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.lairdham.controllers.spc.SuperPowersController">
     <top>
-        <VBox alignment="CENTER" spacing="10.0">
+        <VBox alignment="CENTER" spacing="15.0">
             <Label text="Powers">
                 <font>
                     <Font size="22.0" />
+                </font>
+            </Label>
+            <Label fx:id="powerPointsCounterLabel">
+                <font>
+                    <Font size="16.0"/>
                 </font>
             </Label>
             <Pane minHeight="10.0"/>
@@ -27,9 +24,9 @@
     </top>
     <center>
         <VBox alignment="TOP_CENTER" spacing="10.0">
-            <SplitPane dividerPositions="0.25" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="600" prefWidth="700" prefHeight="400">
+            <SplitPane dividerPositions="0.15" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="600" prefWidth="800" prefHeight="500">
                 <AnchorPane>
-                    <ListView fx:id="powersListView" onMouseClicked="#viewPower"/>
+                    <ListView fx:id="powersListView" onMouseClicked="#viewPower" maxWidth="150.0" prefHeight="500"/>
                 </AnchorPane>
                 <VBox spacing="20.0" alignment="TOP_CENTER">
                     <Label fx:id="superPowerDescriptionTitle">
@@ -37,15 +34,29 @@
                             <Font size="18.0"/>
                         </font>
                     </Label>
-                    <Text fx:id="trappingsText" wrappingWidth="400.0"/>
-                    <Text fx:id="superPowerDescription" wrappingWidth="400.0" />
+                    <Text fx:id="trappingsText" wrappingWidth="600.0"/>
+                    <Text fx:id="superPowerDescription" wrappingWidth="600.0" />
                     <Pane VBox.vgrow="ALWAYS"/>
+                    <Button fx:id="chooseModifierButton" text="Choose Modifier..." onAction="#chooseModifier" visible="false"/>
                     <ToolBar >
                         <Pane HBox.hgrow="ALWAYS"/>
                         <Button disable="true" fx:id="selectPowerButton" onAction="#selectPower" text="Select Power" minWidth="80.0"/>
                     </ToolBar>
                 </VBox>
             </SplitPane>
+            <TableView fx:id="selectedPowersTableView" onMouseClicked="#viewSelectedPower" maxWidth="-Infinity" minWidth="600" prefWidth="800">
+                <columns>
+                    <TableColumn text="Name">
+                        <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Type">
+                        <cellValueFactory><PropertyValueFactory property="type"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Effects">
+                        <cellValueFactory><PropertyValueFactory property="shortDescription"/></cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
         </VBox>
     </center>
     <bottom>

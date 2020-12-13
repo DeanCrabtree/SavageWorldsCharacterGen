@@ -20,6 +20,8 @@ public final class CharacterCreatorSingleton {
     private int minorHindrancesChosen = 0;
 
     private List<Edge> settingRequiredEdges;
+    private int initialPowerPoints = 20;
+    private int currentPowerPoints = 20;
 
 
     private final static CharacterCreatorSingleton CHARACTER_CREATOR_INSTANCE = new CharacterCreatorSingleton();
@@ -161,5 +163,21 @@ public final class CharacterCreatorSingleton {
 
     public void setSettingRequiredEdges(List<Edge> settingRequiredEdges) {
         this.settingRequiredEdges = settingRequiredEdges;
+    }
+
+    public int getCurrentPowerPoints() {
+        return currentPowerPoints;
+    }
+
+    public void setCurrentPowerPoints(int currentPowerPoints) {
+        this.currentPowerPoints = currentPowerPoints;
+    }
+
+    public int getInitialPowerPoints() {
+        return initialPowerPoints;
+    }
+
+    public void setInitialPowerPoints(int initialPowerPoints) {
+        this.initialPowerPoints = initialPowerPoints;
     }
 }

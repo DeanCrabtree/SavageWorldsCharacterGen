@@ -47,4 +47,19 @@ public class SuperPowerModifier {
     public void setSteppedCosts(int[] steppedCosts) {
         this.steppedCosts = steppedCosts;
     }
+
+    public String getCostAsString() {
+        if (levelled) {
+            return cost + "/Level";
+        } else if (steppedCosts != null && steppedCosts.length > 0) {
+            StringBuilder builder = new StringBuilder();
+            for (int steppedCost : steppedCosts) {
+                builder.append(steppedCost);
+                builder.append("/");
+            }
+            return builder.substring(0, builder.length() - 1);
+        } else {
+            return cost + "";
+        }
+    }
 }
