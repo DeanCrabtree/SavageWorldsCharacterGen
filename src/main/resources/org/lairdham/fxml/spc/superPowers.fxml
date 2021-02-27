@@ -42,9 +42,8 @@
                         <Button fx:id="chooseModifierButton" text="Choose Modifier..." onAction="#chooseModifier" visible="false"/>
                         <Button fx:id="removeModifierButton" text="Remove Modifier..." onAction="#removeModifier" visible="false" disable="true"/>
                     </HBox>
-                    <ToolBar >
-                        <Pane HBox.hgrow="ALWAYS"/>
-                        <Button disable="true" fx:id="selectPowerButton" onAction="#selectPower" text="Select Power" minWidth="80.0"/>
+                    <ToolBar fx:id="buttonToolbar">
+                        <Pane fx:id="toolbarPane" HBox.hgrow="ALWAYS"/>
                     </ToolBar>
                 </VBox>
             </SplitPane>
@@ -53,14 +52,18 @@
                     <TableColumn text="Name">
                         <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
                     </TableColumn>
-                    <TableColumn text="Type">
-                        <cellValueFactory><PropertyValueFactory property="type"/></cellValueFactory>
+                    <TableColumn text="Total Cost">
+                        <cellValueFactory><PropertyValueFactory property="totalPowerCost"/></cellValueFactory>
                     </TableColumn>
-                    <TableColumn text="Effects">
-                        <cellValueFactory><PropertyValueFactory property="shortDescription"/></cellValueFactory>
+                    <TableColumn text="Summary">
+                        <cellValueFactory><PropertyValueFactory property="summary"/></cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Modifiers">
+                        <cellValueFactory><PropertyValueFactory property="chosenModifierSummary"/></cellValueFactory>
                     </TableColumn>
                 </columns>
             </TableView>
+            <Button fx:id="removeSelectedPowerButton" disable="true" text="Remove Power" onAction="#removeSelectedPower"/>
         </VBox>
     </center>
     <bottom>

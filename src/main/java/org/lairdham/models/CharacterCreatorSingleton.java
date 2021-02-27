@@ -21,7 +21,7 @@ public final class CharacterCreatorSingleton {
 
     private List<Edge> settingRequiredEdges;
     private int initialPowerPoints = 20;
-    private int currentPowerPoints = 20;
+    private int currentPowerPoints = initialPowerPoints;
 
 
     private final static CharacterCreatorSingleton CHARACTER_CREATOR_INSTANCE = new CharacterCreatorSingleton();
@@ -171,6 +171,10 @@ public final class CharacterCreatorSingleton {
 
     public void setCurrentPowerPoints(int currentPowerPoints) {
         this.currentPowerPoints = currentPowerPoints;
+    }
+
+    public void adjustCurrentPowerPoints(int amount) {
+        this.currentPowerPoints+=amount;
     }
 
     public int getInitialPowerPoints() {

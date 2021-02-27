@@ -2,15 +2,14 @@ package org.lairdham.controllers.spc;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -43,11 +42,15 @@ public class SuperPowersController {
     @FXML
     Text chosenModifiersText;
     @FXML
-    Button selectPowerButton;
-    @FXML
     TableView<SuperPower> selectedPowersTableView;
     @FXML
     Label powerPointsCounterLabel;
+    @FXML
+    ToolBar buttonToolbar;
+    @FXML
+    Pane toolbarPane;
+    @FXML
+    Button removeSelectedPowerButton;
 
     Map<String, SuperPower> powersMap = new HashMap<>();
     ObjectMapper objectMapper = new ObjectMapper();
@@ -62,6 +65,7 @@ public class SuperPowersController {
         powerPointsCounterLabel.setText("Power Points: " + characterCreatorSingleton.getCurrentPowerPoints());
         loadSuperPowers();
         powersListView.getItems().addAll(powersMap.keySet());
+        resizeSelectedPowersTable();
     }
 
     @FXML
@@ -96,16 +100,98 @@ public class SuperPowersController {
             }
             chooseModifierButton.setVisible(true);
             removeModifierButton.setVisible(true);
+            setupToolbarButtons(superPower);
         }
 
     }
 
-    @FXML
-    public void selectPower() {
+    private void setupToolbarButtons(SuperPower superPower) {
+        buttonToolbar.getItems().clear();
+        buttonToolbar.getItems().add(0, toolbarPane);
+
+        if (superPower.isLevelled()) {
+            Button button = new Button("Select Power: " + setMinValueToOne(superPower.getBaseCost() + superPower.getPointsSpentOn()) + " point(s)");
+            button.setOnAction(actionEvent -> {
+                superPower.addPointsSpentOn((Integer) button.getUserData());
+                superPower.setSelectedLevels(((Integer) button.getUserData())/superPower.getBaseCost());
+                selectPower(superPower);
+            });
+            button.setUserData(superPower.getBaseCost());
+            buttonToolbar.getItems().add(1, button);
+
+            Label label = new Label("Level(s):");
+            buttonToolbar.getItems().add(1, label);
+            Spinner<Integer> levelSpinner = new Spinner<>(1, calculateMaxLevelsAvailable(superPower), 1);
+            levelSpinner.setPrefWidth(50.0);
+            levelSpinner.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+                button.setUserData(newValue * superPower.getBaseCost());
+                button.setText("Select Power: " + (superPower.getPointsSpentOn() + (Integer) button.getUserData()) + " point(s)");
+            });
+            if ((Integer) button.getUserData() + superPower.getPointsSpentOn() > (characterCreatorSingleton.getCurrentPowerPoints())) {
+                button.setDisable(true);
+                levelSpinner.setDisable(true);
+            }
+            buttonToolbar.getItems().add(2, levelSpinner);
+
+        } else if (superPower.getSteppedCosts()!= null && superPower.getSteppedCosts().length > 1) {
+            int counter = 1;
+            for (int steppedCost : superPower.getSteppedCosts()) {
+                Button button = new Button("Select Power: " + setMinValueToOne(steppedCost + superPower.getPointsSpentOn()) + " point(s)");
+                button.setOnAction(actionEvent -> {
+                    superPower.addPointsSpentOn(steppedCost);
+                    selectPower(superPower);
+                });
+                if (steppedCost + superPower.getPointsSpentOn() > (characterCreatorSingleton.getCurrentPowerPoints())) {
+                    button.setDisable(true);
+                }
+                buttonToolbar.getItems().add(counter, button);
+                counter++;
+            }
+        } else {
+            Button button = new Button("Select Power: " + setMinValueToOne(superPower.getBaseCost() + superPower.getPointsSpentOn()) + " point(s)");
+            button.setOnAction(actionEvent -> {
+                superPower.addPointsSpentOn(superPower.getBaseCost());
+                selectPower(superPower);
+            });
+            buttonToolbar.getItems().add(1, button);
+
+            if (superPower.getBaseCost() + superPower.getPointsSpentOn() > (characterCreatorSingleton.getCurrentPowerPoints())) {
+                button.setDisable(true);
+            }
+        }
+    }
+
+    private int calculateMaxLevelsAvailable(SuperPower superPower) {
+        return Math.max(1,Math.min(characterCreatorSingleton.getCurrentPowerPoints() - superPower.getPointsSpentOn() / superPower.getBaseCost(), superPower.getMaxLevels()));
+    }
+
+
+    public void selectPower(SuperPower superPower) {
+        System.out.println(superPower.getName() + " " + superPower.getTotalPowerCost());
+        characterCreatorSingleton.adjustCurrentPowerPoints(-superPower.getTotalPowerCost());
+        selectedPowersTableView.getItems().add(superPower);
+        powersMap.put(superPower.getName(), new SuperPower(superPower));
+        resizeSelectedPowersTable();
+        powerPointsCounterLabel.setText("Power Points: " + characterCreatorSingleton.getCurrentPowerPoints());
+        viewPower();
     }
 
     @FXML
     public void viewSelectedPower() {
+        if (selectedPowersTableView.getSelectionModel().getSelectedItem() != null) {
+            removeSelectedPowerButton.setDisable(false);
+        }
+    }
+
+    @FXML
+    public void removeSelectedPower() {
+        SuperPower selectedPower = selectedPowersTableView.getSelectionModel().getSelectedItem();
+        if (selectedPower != null) {
+            selectedPowersTableView.getItems().remove(selectedPower);
+            characterCreatorSingleton.adjustCurrentPowerPoints(selectedPower.getTotalPowerCost());
+            powerPointsCounterLabel.setText("Power Points: " + characterCreatorSingleton.getCurrentPowerPoints());
+        }
+        removeSelectedPowerButton.setDisable(true);
     }
 
     @FXML
@@ -165,6 +251,27 @@ public class SuperPowersController {
             superPowersList.forEach(superPower -> powersMap.put(superPower.getName(), superPower));
         } catch (IOException e) {
             System.out.println("Error when trying to load superPowers.json: " + e.getMessage());
+        }
+    }
+
+    private int setMinValueToOne(int value) {
+        if (value > 0) {
+            return value;
+        } else {
+            return 1;
+        }
+    }
+
+    private void resizeSelectedPowersTable() {
+        ObservableList<TableColumn<SuperPower, ?>> columns = selectedPowersTableView.getColumns();
+        setColumnWidthToMatchContent(columns.get(2));
+        setColumnWidthToMatchContent(columns.get(3));
+    }
+    private void setColumnWidthToMatchContent(TableColumn column) {
+        Object cellData = column.getCellData(selectedPowersTableView.getItems().size()-1);
+        if(cellData != null) {
+            Text data = new Text(cellData.toString());
+            column.setMinWidth(data.getLayoutBounds().getWidth() + 10.0);
         }
     }
 }

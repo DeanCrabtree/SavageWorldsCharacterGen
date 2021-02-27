@@ -96,6 +96,9 @@ public class ChooseSuperPowerModifierController {
                 Button button = new Button("Select Modifier: " + steppedCost + " point(s)");
                 button.setOnAction(actionEvent -> selectModifier(modifier, steppedCost));
                 buttonToolbar.getItems().add(counter, button);
+                if (steppedCost > characterCreatorSingleton.getCurrentPowerPoints()) {
+                    button.setDisable(true);
+                }
                 counter++;
             }
         } else {

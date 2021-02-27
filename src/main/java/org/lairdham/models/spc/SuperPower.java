@@ -1,20 +1,39 @@
 package org.lairdham.models.spc;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SuperPower {
 
     String name;
     String description;
+    String shortDescription;
     String trappings;
     int baseCost;
     boolean levelled;
+    int selectedLevels;
+    int maxLevels;
     int[] steppedCosts;
     List<SuperPowerModifier> chosenModifiers = new ArrayList<>();
     List<SuperPowerModifier> allModifiers;
     int pointsSpentOn;
+    public SuperPower() {}
+
+    public SuperPower(SuperPower superPower) {
+        this.name = superPower.getName();
+        this.description = superPower.getDescription();
+        this.shortDescription = superPower.getShortDescription();
+        this.trappings = superPower.getTrappings();
+        this.baseCost = superPower.getBaseCost();
+        this.levelled = superPower.isLevelled();
+        this.maxLevels = superPower.getMaxLevels();
+        this.steppedCosts = superPower.getSteppedCosts();
+        this.allModifiers = superPower.getAllModifiers();
+    }
 
     public String getName() {
         return name;
@@ -30,6 +49,14 @@ public class SuperPower {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 
     public String getTrappings() {
@@ -54,6 +81,22 @@ public class SuperPower {
 
     public void setLevelled(boolean levelled) {
         this.levelled = levelled;
+    }
+
+    public int getSelectedLevels() {
+        return selectedLevels;
+    }
+
+    public void setSelectedLevels(int selectedLevels) {
+        this.selectedLevels = selectedLevels;
+    }
+
+    public int getMaxLevels() {
+        return maxLevels;
+    }
+
+    public void setMaxLevels(int maxLevels) {
+        this.maxLevels = maxLevels;
     }
 
     public int[] getSteppedCosts() {
@@ -106,6 +149,35 @@ public class SuperPower {
 
     public void subtractPointsSpentOn(int subtraction) {
         pointsSpentOn -= subtraction;
+    }
+
+    public int getTotalPowerCost() {
+        if (pointsSpentOn > 0) {
+            return pointsSpentOn;
+        } else {
+            return 1;
+        }
+    }
+
+    public String getChosenModifierSummary() {
+        StringBuilder stringBuilder = new StringBuilder();
+        chosenModifiers.forEach(chosenModifier -> {
+            stringBuilder.append(chosenModifier.getName())
+                    .append(": ")
+                    .append(chosenModifier.getPointsSpentOn())
+                    .append(" point(s), ");
+        });
+        return stringBuilder.toString();
+    }
+
+    public String getSummary() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (isLevelled()) {
+            stringBuilder.append(selectedLevels).append(" level(s). ");
+        }
+        stringBuilder.append(shortDescription);
+
+        return stringBuilder.toString();
     }
 
     public String getCostAsString() {
