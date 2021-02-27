@@ -2,12 +2,13 @@ package org.lairdham.controllers.spc;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
@@ -18,10 +19,9 @@ import org.lairdham.App;
 import org.lairdham.models.Character;
 import org.lairdham.models.CharacterCreatorSingleton;
 import org.lairdham.models.spc.SuperPower;
-import org.lairdham.models.spc.SuperPowerModifier;
+import org.lairdham.controllers.spc.ChooseSuperPowerModifierController.DialogType;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +31,8 @@ public class SuperPowersController {
     @FXML
     public Button chooseModifierButton;
     @FXML
+    public Button removeModifierButton;
+    @FXML
     ListView<String> powersListView;
     @FXML
     Label superPowerDescriptionTitle;
@@ -38,6 +40,8 @@ public class SuperPowersController {
     Text trappingsText;
     @FXML
     Text superPowerDescription;
+    @FXML
+    Text chosenModifiersText;
     @FXML
     Button selectPowerButton;
     @FXML
@@ -78,7 +82,20 @@ public class SuperPowersController {
             superPowerDescriptionTitle.setText(superPower.getName() + " (" + superPower.getCostAsString() + ")");
             trappingsText.setText("Trappings: " + superPower.getTrappings());
             superPowerDescription.setText(superPower.getDescription());
+
+            if (!superPower.getChosenModifiers().isEmpty()) {
+                StringBuilder chosenModifiersStringBuilder = new StringBuilder();
+                chosenModifiersStringBuilder.append("Chosen Mods:\n");
+                superPower.getChosenModifiers().forEach(modifier -> chosenModifiersStringBuilder.append(modifier.getName())
+                        .append(": ").append(modifier.getPointsSpentOn()).append(" point(s)\n"));
+                chosenModifiersText.setText(chosenModifiersStringBuilder.toString());
+                removeModifierButton.setDisable(false);
+            } else {
+                chosenModifiersText.setText("");
+                removeModifierButton.setDisable(true);
+            }
             chooseModifierButton.setVisible(true);
+            removeModifierButton.setVisible(true);
         }
 
     }
@@ -94,6 +111,34 @@ public class SuperPowersController {
     @FXML
     public void chooseModifier() throws IOException {
         SuperPower power = powersMap.get(powersListView.getSelectionModel().getSelectedItem());
+        ChooseSuperPowerModifierController controller = createModifierPopupWindow(power, DialogType.CHOOSE);
+
+        if (controller.getChosenModifier() != null) {
+            power.addChosenModifier(controller.getChosenModifier());
+            power.addPointsSpentOn(controller.getChosenModifier().getPointsSpentOn());
+
+            powersMap.put(power.getName(), power);
+            viewPower();
+            System.out.println(controller.getChosenModifier() + " cost: " + controller.getChosenModifier().getPointsSpentOn());
+        }
+
+    }
+
+    @FXML
+    public void removeModifier() throws IOException {
+        SuperPower power = powersMap.get(powersListView.getSelectionModel().getSelectedItem());
+        ChooseSuperPowerModifierController controller = createModifierPopupWindow(power, DialogType.REMOVE);
+
+        if (controller.getChosenModifier() != null) {
+            power.removeChosenModifier(controller.getChosenModifier());
+            power.subtractPointsSpentOn(controller.getChosenModifier().getPointsSpentOn());
+            powersMap.put(power.getName(), power);
+            viewPower();
+        }
+
+    }
+
+    private ChooseSuperPowerModifierController createModifierPopupWindow(SuperPower power, DialogType dialogType) throws IOException {
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.UTILITY);
@@ -108,9 +153,10 @@ public class SuperPowersController {
         });
 
         ChooseSuperPowerModifierController controller = fxmlLoader.getController();
-        controller.setSuperPower(power);
+        controller.setUp(power, dialogType);
         stage.setScene(scene);
         stage.showAndWait();
+        return controller;
     }
 
     private void loadSuperPowers() {
@@ -118,7 +164,7 @@ public class SuperPowersController {
             List<SuperPower> superPowersList = objectMapper.readValue(App.class.getResource("datafiles/spc/superPowers.json"), new TypeReference<>() {});
             superPowersList.forEach(superPower -> powersMap.put(superPower.getName(), superPower));
         } catch (IOException e) {
-            System.out.println("Error when trying to load superPowers.json");
+            System.out.println("Error when trying to load superPowers.json: " + e.getMessage());
         }
     }
 }

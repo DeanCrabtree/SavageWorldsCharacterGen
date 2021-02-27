@@ -177,6 +177,12 @@ public class TraitsController {
                 TextAlignment.LEFT);
     }
 
+    @FXML
+    private void showSkillPointsInfo() throws IOException {
+        Utils.showPopup("Skill Points",
+                "It costs 1 Skill Point to raise a Skill by a die type, up to the die type of the associated attribute. For every die type beyond the associated attribute, it costs 2 Skill Points.");
+    }
+
     private void increaseAttribute(Attribute attribute, ImageView imageView) {
         if (characterCreatorSingleton.getAttributePoints() > 0 &&
                 !attribute.getValue().equals(TraitValue.d12)) {

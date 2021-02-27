@@ -1,6 +1,7 @@
 package org.lairdham.models.spc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SuperPower {
@@ -11,7 +12,7 @@ public class SuperPower {
     int baseCost;
     boolean levelled;
     int[] steppedCosts;
-    List<SuperPowerModifier> chosenModifiers;
+    List<SuperPowerModifier> chosenModifiers = new ArrayList<>();
     List<SuperPowerModifier> allModifiers;
     int pointsSpentOn;
 
@@ -71,6 +72,14 @@ public class SuperPower {
         this.chosenModifiers = chosenModifiers;
     }
 
+    public void addChosenModifier(SuperPowerModifier chosenModifier) {
+        chosenModifiers.add(chosenModifier);
+    }
+
+    public void removeChosenModifier(SuperPowerModifier chosenModifier) {
+        chosenModifiers.remove(chosenModifier);
+    }
+
     public List<SuperPowerModifier> getAllModifiers() {
         if (allModifiers != null) {
             return allModifiers;
@@ -91,6 +100,14 @@ public class SuperPower {
         this.pointsSpentOn = pointsSpentOn;
     }
 
+    public void addPointsSpentOn(int addition) {
+        pointsSpentOn += addition;
+    }
+
+    public void subtractPointsSpentOn(int subtraction) {
+        pointsSpentOn -= subtraction;
+    }
+
     public String getCostAsString() {
         if (levelled) {
             return baseCost + "/Level";
@@ -106,4 +123,18 @@ public class SuperPower {
         }
     }
 
+    @Override
+    public String toString() {
+        return "SuperPower{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", trappings='" + trappings + '\'' +
+                ", baseCost=" + baseCost +
+                ", levelled=" + levelled +
+                ", steppedCosts=" + Arrays.toString(steppedCosts) +
+                ", chosenModifiers=" + chosenModifiers +
+                ", allModifiers=" + allModifiers +
+                ", pointsSpentOn=" + pointsSpentOn +
+                '}';
+    }
 }

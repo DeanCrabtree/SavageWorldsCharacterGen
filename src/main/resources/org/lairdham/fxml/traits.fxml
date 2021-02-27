@@ -199,7 +199,7 @@
                         <Button fx:id="sellAttributeButton" text="-" onAction="#spendAttributeForHindrancePoints" visible="false"/>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                        <Label fx:id="skillPointLabel" text="Skill Points:">
+                        <Label fx:id="skillPointLabel" text="Skill Points:" onMouseEntered="#mouseOver" onMouseExited="#mouseOff" onMouseClicked="#showSkillPointsInfo">
                             <font>
                                 <Font size="18.0" />
                             </font>

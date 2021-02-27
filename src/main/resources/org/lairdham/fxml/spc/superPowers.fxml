@@ -36,8 +36,12 @@
                     </Label>
                     <Text fx:id="trappingsText" wrappingWidth="600.0"/>
                     <Text fx:id="superPowerDescription" wrappingWidth="600.0" />
+                    <Text fx:id="chosenModifiersText" wrappingWidth="600.0" />
                     <Pane VBox.vgrow="ALWAYS"/>
-                    <Button fx:id="chooseModifierButton" text="Choose Modifier..." onAction="#chooseModifier" visible="false"/>
+                    <HBox spacing="10.0" alignment="CENTER">
+                        <Button fx:id="chooseModifierButton" text="Choose Modifier..." onAction="#chooseModifier" visible="false"/>
+                        <Button fx:id="removeModifierButton" text="Remove Modifier..." onAction="#removeModifier" visible="false" disable="true"/>
+                    </HBox>
                     <ToolBar >
                         <Pane HBox.hgrow="ALWAYS"/>
                         <Button disable="true" fx:id="selectPowerButton" onAction="#selectPower" text="Select Power" minWidth="80.0"/>
