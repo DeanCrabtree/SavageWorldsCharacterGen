@@ -12,7 +12,7 @@ public class SuperPower {
     String name;
     String description;
     String shortDescription;
-    String trappings;
+    String exampleTrappings;
     int baseCost;
     boolean levelled;
     int selectedLevels;
@@ -21,13 +21,16 @@ public class SuperPower {
     List<SuperPowerModifier> chosenModifiers = new ArrayList<>();
     List<SuperPowerModifier> allModifiers;
     int pointsSpentOn;
+    String userDefinedTrappings;
+    int selectedSteppedCost;
+
     public SuperPower() {}
 
     public SuperPower(SuperPower superPower) {
         this.name = superPower.getName();
         this.description = superPower.getDescription();
         this.shortDescription = superPower.getShortDescription();
-        this.trappings = superPower.getTrappings();
+        this.exampleTrappings = superPower.getExampleTrappings();
         this.baseCost = superPower.getBaseCost();
         this.levelled = superPower.isLevelled();
         this.maxLevels = superPower.getMaxLevels();
@@ -59,12 +62,12 @@ public class SuperPower {
         this.shortDescription = shortDescription;
     }
 
-    public String getTrappings() {
-        return trappings;
+    public String getExampleTrappings() {
+        return exampleTrappings;
     }
 
-    public void setTrappings(String trappings) {
-        this.trappings = trappings;
+    public void setExampleTrappings(String exampleTrappings) {
+        this.exampleTrappings = exampleTrappings;
     }
 
     public int getBaseCost() {
@@ -151,6 +154,23 @@ public class SuperPower {
         pointsSpentOn -= subtraction;
     }
 
+    public String getUserDefinedTrappings() {
+        return userDefinedTrappings;
+    }
+
+    public void setUserDefinedTrappings(String userDefinedTrappings) {
+        this.userDefinedTrappings = userDefinedTrappings;
+    }
+
+    public int getSelectedSteppedCost() {
+        return selectedSteppedCost;
+    }
+
+    public void setSelectedSteppedCost(int selectedSteppedCost) {
+        this.selectedSteppedCost = selectedSteppedCost;
+    }
+
+
     public int getTotalPowerCost() {
         if (pointsSpentOn > 0) {
             return pointsSpentOn;
@@ -200,7 +220,7 @@ public class SuperPower {
         return "SuperPower{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", trappings='" + trappings + '\'' +
+                ", trappings='" + exampleTrappings + '\'' +
                 ", baseCost=" + baseCost +
                 ", levelled=" + levelled +
                 ", steppedCosts=" + Arrays.toString(steppedCosts) +

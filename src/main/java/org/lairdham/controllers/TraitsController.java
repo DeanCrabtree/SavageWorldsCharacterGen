@@ -571,6 +571,7 @@ public class TraitsController {
 
     public void spendHindrancePointsForAttributePoint() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Spend 2 Hindrance Points to gain 1 Attribute Point?", ButtonType.YES, ButtonType.NO);
+        alert.setGraphic(null);
         alert.showAndWait();
 
         if(alert.getResult() == ButtonType.YES) {
@@ -587,6 +588,7 @@ public class TraitsController {
 
     public void spendAttributeForHindrancePoints() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Revert 1 Attribute Point into 2 Hindrance Points?", ButtonType.YES, ButtonType.NO);
+        alert.setGraphic(null);
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
@@ -602,6 +604,7 @@ public class TraitsController {
 
     public void spendHindrancePointForSkillPoint() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Spend 1 Hindrance Point to gain 1 Skill Point?", ButtonType.YES, ButtonType.NO);
+        alert.setGraphic(null);
         alert.showAndWait();
 
         if(alert.getResult() == ButtonType.YES) {
@@ -619,6 +622,7 @@ public class TraitsController {
 
     public void spendSkillForHindrancePoint() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Revert 1 Skill Point into 1 Hindrance Point?", ButtonType.YES, ButtonType.NO);
+        alert.setGraphic(null);
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {

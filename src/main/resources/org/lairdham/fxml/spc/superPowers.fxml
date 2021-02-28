@@ -58,6 +58,9 @@
                     <TableColumn text="Summary">
                         <cellValueFactory><PropertyValueFactory property="summary"/></cellValueFactory>
                     </TableColumn>
+                    <TableColumn text="Trappings">
+                        <cellValueFactory><PropertyValueFactory property="userDefinedTrappings"/></cellValueFactory>
+                    </TableColumn>
                     <TableColumn text="Modifiers">
                         <cellValueFactory><PropertyValueFactory property="chosenModifierSummary"/></cellValueFactory>
                     </TableColumn>

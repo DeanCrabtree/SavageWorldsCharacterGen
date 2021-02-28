@@ -15,15 +15,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.lairdham.App;
+import org.lairdham.controllers.spc.ChooseSuperPowerModifierController.DialogType;
 import org.lairdham.models.Character;
 import org.lairdham.models.CharacterCreatorSingleton;
 import org.lairdham.models.spc.SuperPower;
-import org.lairdham.controllers.spc.ChooseSuperPowerModifierController.DialogType;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class SuperPowersController {
 
@@ -84,7 +85,7 @@ public class SuperPowersController {
         SuperPower superPower = powersMap.get(powersListView.getSelectionModel().getSelectedItem());
         if (superPower != null) {
             superPowerDescriptionTitle.setText(superPower.getName() + " (" + superPower.getCostAsString() + ")");
-            trappingsText.setText("Trappings: " + superPower.getTrappings());
+            trappingsText.setText("Trappings: " + superPower.getExampleTrappings());
             superPowerDescription.setText(superPower.getDescription());
 
             if (!superPower.getChosenModifiers().isEmpty()) {
@@ -139,6 +140,7 @@ public class SuperPowersController {
                 Button button = new Button("Select Power: " + setMinValueToOne(steppedCost + superPower.getPointsSpentOn()) + " point(s)");
                 button.setOnAction(actionEvent -> {
                     superPower.addPointsSpentOn(steppedCost);
+                    superPower.setSelectedSteppedCost(steppedCost);
                     selectPower(superPower);
                 });
                 if (steppedCost + superPower.getPointsSpentOn() > (characterCreatorSingleton.getCurrentPowerPoints())) {
@@ -165,21 +167,52 @@ public class SuperPowersController {
         return Math.max(1,Math.min(characterCreatorSingleton.getCurrentPowerPoints() - superPower.getPointsSpentOn() / superPower.getBaseCost(), superPower.getMaxLevels()));
     }
 
-
     public void selectPower(SuperPower superPower) {
-        System.out.println(superPower.getName() + " " + superPower.getTotalPowerCost());
-        characterCreatorSingleton.adjustCurrentPowerPoints(-superPower.getTotalPowerCost());
-        selectedPowersTableView.getItems().add(superPower);
-        powersMap.put(superPower.getName(), new SuperPower(superPower));
-        resizeSelectedPowersTable();
-        powerPointsCounterLabel.setText("Power Points: " + characterCreatorSingleton.getCurrentPowerPoints());
-        viewPower();
+        Optional<String> userDefinedTrappings = showTrappingsInputDialog(superPower.getName());
+
+        userDefinedTrappings.ifPresent(trappings -> {
+            System.out.println(superPower.getName() + " " + superPower.getTotalPowerCost() + " " + trappings);
+            superPower.setUserDefinedTrappings(trappings);
+            characterCreatorSingleton.adjustCurrentPowerPoints(-superPower.getTotalPowerCost());
+            selectedPowersTableView.getItems().add(superPower);
+            powersMap.put(superPower.getName(), new SuperPower(superPower));
+            resizeSelectedPowersTable();
+            powerPointsCounterLabel.setText("Power Points: " + characterCreatorSingleton.getCurrentPowerPoints());
+            viewPower();
+        });
     }
 
     @FXML
     public void viewSelectedPower() {
-        if (selectedPowersTableView.getSelectionModel().getSelectedItem() != null) {
+        SuperPower superPower = selectedPowersTableView.getSelectionModel().getSelectedItem();
+        if (superPower != null) {
             removeSelectedPowerButton.setDisable(false);
+            superPowerDescriptionTitle.setText(superPower.getName());
+            trappingsText.setText("Trappings: " + superPower.getUserDefinedTrappings());
+            superPowerDescription.setText(superPower.getDescription());
+
+            StringBuilder chosenModifiersStringBuilder = new StringBuilder();
+            if (!superPower.getChosenModifiers().isEmpty()) {
+                chosenModifiersStringBuilder.append("Chosen Mods:\n");
+                superPower.getChosenModifiers().forEach(modifier -> chosenModifiersStringBuilder.append(modifier.getName())
+                        .append(": ").append(modifier.getPointsSpentOn()).append(" point(s)\n"));
+            }
+
+            if (superPower.getSteppedCosts()!= null && superPower.getSteppedCosts().length > 1) {
+                chosenModifiersStringBuilder.append("\nBase Power Cost: ").append(superPower.getSelectedSteppedCost()).append(" point(s)\n");
+            } else {
+                chosenModifiersStringBuilder.append("\nBase Power Cost: ").append(superPower.getBaseCost()).append(" point(s)\n");
+            }
+            if (superPower.isLevelled()) {
+                chosenModifiersStringBuilder.append("Levels Taken: ").append(superPower.getSelectedLevels()).append(" (")
+                        .append(superPower.getSelectedLevels()).append(" x ").append(superPower.getBaseCost()).append(" = ")
+                        .append(superPower.getSelectedLevels()*superPower.getBaseCost()).append(" point(s))\n");
+            }
+            chosenModifiersStringBuilder.append("\nTotal Power Cost: ").append(superPower.getTotalPowerCost()).append(" point(s)");
+            chosenModifiersText.setText(chosenModifiersStringBuilder.toString());
+            chooseModifierButton.setVisible(false);
+            removeModifierButton.setVisible(false);
+            buttonToolbar.getItems().clear();
         }
     }
 
@@ -192,6 +225,7 @@ public class SuperPowersController {
             powerPointsCounterLabel.setText("Power Points: " + characterCreatorSingleton.getCurrentPowerPoints());
         }
         removeSelectedPowerButton.setDisable(true);
+        viewPower();
     }
 
     @FXML
@@ -205,9 +239,7 @@ public class SuperPowersController {
 
             powersMap.put(power.getName(), power);
             viewPower();
-            System.out.println(controller.getChosenModifier() + " cost: " + controller.getChosenModifier().getPointsSpentOn());
         }
-
     }
 
     @FXML
@@ -245,6 +277,15 @@ public class SuperPowersController {
         return controller;
     }
 
+    private Optional<String> showTrappingsInputDialog(String superPowerName) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(superPowerName + " Trappings");
+        dialog.setHeaderText("Trappings describe how a power looks or is acquired, those listed on the Power entry are just examples. Please enter your power's trappings below.\nYou can also include relevant descriptions of modifiers (e.g. type of device, or limitation)");
+        dialog.setGraphic(null);
+
+        return dialog.showAndWait();
+    }
+
     private void loadSuperPowers() {
         try {
             List<SuperPower> superPowersList = objectMapper.readValue(App.class.getResource("datafiles/spc/superPowers.json"), new TypeReference<>() {});
@@ -266,6 +307,7 @@ public class SuperPowersController {
         ObservableList<TableColumn<SuperPower, ?>> columns = selectedPowersTableView.getColumns();
         setColumnWidthToMatchContent(columns.get(2));
         setColumnWidthToMatchContent(columns.get(3));
+        setColumnWidthToMatchContent(columns.get(4));
     }
     private void setColumnWidthToMatchContent(TableColumn column) {
         Object cellData = column.getCellData(selectedPowersTableView.getItems().size()-1);
